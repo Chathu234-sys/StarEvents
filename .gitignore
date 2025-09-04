@@ -7,3 +7,5 @@ obj/
 *.cache
 *.log
 *.db
+# Ignore appsettings.json
+appsettings.json
