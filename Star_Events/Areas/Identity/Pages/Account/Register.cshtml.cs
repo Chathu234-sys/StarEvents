@@ -10,7 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Star_Events.Data;
+using Star_Events.Data.Entities;
 using Star_Events.Models;
 using System;
 using System.Collections.Generic;
@@ -25,6 +28,7 @@ namespace Star_Events.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
+
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
@@ -32,12 +36,15 @@ namespace Star_Events.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
+        private readonly ApplicationDbContext _context;
+
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -45,6 +52,7 @@ namespace Star_Events.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -153,6 +161,34 @@ namespace Star_Events.Areas.Identity.Pages.Account
                     if (!string.IsNullOrWhiteSpace(Input.Role))
                     {
                         await _userManager.AddToRoleAsync(user, Input.Role);
+                    }
+
+                    // Save data to the User table
+                    var newUser = new UserModel
+                    {
+                        FirstName = Input.FirstName,
+                        LastName = Input.LastName,
+                        Age = Input.Age,
+                        ContactNumber = Input.ContactNumber,
+                        Email = Input.Email,
+                        Role = Input.Role
+                    };
+
+                    try
+                    {
+                        newUser.CreatedAt = DateTime.Now;
+                        _context.Users.Add(newUser);
+                        await _context.SaveChangesAsync();
+                        TempData["Message"] = "User registered successfully!";
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        Console.WriteLine("Error while adding data!");
+                        throw;
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine("Error while adding data!");
                     }
 
                     var userId = await _userManager.GetUserIdAsync(user);

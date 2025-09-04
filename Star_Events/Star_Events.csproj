@@ -19,8 +19,6 @@
 
   <ItemGroup>
     <Folder Include="Business\" />
-    <Folder Include="Data\Entities\" />
-    <Folder Include="Helper\" />
     <Folder Include="Models\ViewModels\" />
     <Folder Include="Repositories\" />
   </ItemGroup>

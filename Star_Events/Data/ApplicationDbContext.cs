@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Star_Events.Data.Entities;
 using Star_Events.Models;
 
 namespace Star_Events.Data;
@@ -10,4 +11,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
-}
+    public DbSet<UserModel> Users { get; set; }
+    }
