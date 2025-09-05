@@ -27,6 +27,34 @@ namespace Star_Events.Repositories.Services
             }
         }
 
+        public async Task DeleteUser(UserModel user)
+        {
+            try
+            {
+                _context.Update(user);
+                await _context.SaveChangesAsync(); //soft delete
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while deleting a user: {ex.Message}");
+                throw; // Re-throw the exception after logging it
+            }
+        }
+
+        public async Task EditUser(UserModel user)
+        {
+            try
+            {
+                _context.Update(user);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while updating a user: {ex.Message}");
+                throw; // Re-throw the exception after logging it
+            }
+        }
+
         public async Task<IList<UserModel>> GetAllUsers()
         {
             try
@@ -37,6 +65,20 @@ namespace Star_Events.Repositories.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while retrieving users: {ex.Message}");
+                throw; // Re-throw the exception after logging it
+            }
+        }
+
+        public async Task<UserModel> GetUserById(int id)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+                return user;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while retrieving user: {ex.Message}");
                 throw; // Re-throw the exception after logging it
             }
         }

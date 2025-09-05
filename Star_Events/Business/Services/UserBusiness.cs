@@ -18,9 +18,26 @@ namespace Star_Events.Business.Services
             return _userRepository.AddUsers(user);
         }
 
+        public Task DeleteUser(UserModel user)
+        {
+            user.DeletedAt = DateTime.Now;
+            return _userRepository.DeleteUser(user);
+        }
+
+        public Task EditUser(UserModel user)
+        {
+            user.UpdatedAt = DateTime.Now;
+            return _userRepository.EditUser(user);
+        }
+
         public Task<IList<UserModel>> GetAllUsers()
         {
             return _userRepository.GetAllUsers();
+        }
+
+        public Task<UserModel> GetUserById(int id)
+        {
+            return _userRepository.GetUserById(id);
         }
     }
 }
