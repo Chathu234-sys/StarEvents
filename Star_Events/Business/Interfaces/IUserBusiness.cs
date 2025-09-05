@@ -5,5 +5,6 @@ namespace Star_Events.Business.Interfaces
     public interface IUserBusiness
     {
         Task<IList<UserModel>> GetAllUsers(); // Retrieve all users
+        Task AddUsers(UserModel user); // Add a new user
     }
 }

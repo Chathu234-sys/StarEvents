@@ -100,8 +100,7 @@ namespace Star_Events.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(userModel);
-                await _context.SaveChangesAsync();
+                await _business.AddUsers(userModel);
                 return RedirectToAction(nameof(Index));
             }
             return View(userModel);
