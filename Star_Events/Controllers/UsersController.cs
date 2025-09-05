@@ -68,15 +68,14 @@ namespace Star_Events.Controllers
         }
 
         // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var userModel = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var userModel = await _business.GetUserById(id);
             if (userModel == null)
             {
                 return NotFound();
@@ -107,14 +106,14 @@ namespace Star_Events.Controllers
         }
 
         // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var userModel = await _context.Users.FindAsync(id);
+            var userModel = await _business.GetUserById(id);
             if (userModel == null)
             {
                 return NotFound();
@@ -138,8 +137,7 @@ namespace Star_Events.Controllers
             {
                 try
                 {
-                    _context.Update(userModel);
-                    await _context.SaveChangesAsync();
+                    await _business.EditUser(userModel);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -158,15 +156,14 @@ namespace Star_Events.Controllers
         }
 
         // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var userModel = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var userModel = await _business.GetUserById(id);
             if (userModel == null)
             {
                 return NotFound();
@@ -180,13 +177,8 @@ namespace Star_Events.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userModel = await _context.Users.FindAsync(id);
-            if (userModel != null)
-            {
-                _context.Users.Remove(userModel);
-            }
-
-            await _context.SaveChangesAsync();
+            var userModel = await _business.GetUserById(id);
+            await _business.DeleteUser(userModel);
             return RedirectToAction(nameof(Index));
         }
 
