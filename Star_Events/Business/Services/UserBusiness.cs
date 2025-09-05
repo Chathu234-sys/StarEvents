@@ -11,6 +11,13 @@ namespace Star_Events.Business.Services
         {
             _userRepository = userRepository;
         }
+
+        public Task AddUsers(UserModel user)
+        {
+            user.CreatedAt = DateTime.Now;
+            return _userRepository.AddUsers(user);
+        }
+
         public Task<IList<UserModel>> GetAllUsers()
         {
             return _userRepository.GetAllUsers();

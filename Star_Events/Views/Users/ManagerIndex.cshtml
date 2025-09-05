@@ -4,6 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
+
 <div class="container" style="display:flex; justify-content:center; align-items:center; height:10vh; border: 2px solid blue; padding:20px; border-radius:15px;">
     <ul class="nav nav-pills">
         <li class="nav-item dropdown">
@@ -24,15 +25,16 @@
         </li>
     </ul>
 </div>
+<br />
 
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
-            <h2 class="text-white">Customer List</h2>
+            <h2 class="text-white">Event Manager List</h2>
         </div>
         <div class="col-6 text-end">
             <a asp-controller="Users" asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i>&nbsp; Create New Customer
+                <i class="bi bi-plus-circle"></i>&nbsp; Create New Manager
             </a>
         </div>
     </div>
@@ -69,24 +71,25 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr class="table-dark">
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContactNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role)
-            </td>
-            @* <td>
+        @foreach (var item in Model)
+        {
+            <tr class="table-dark">
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContactNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Role)
+                </td>
+                @* <td>
                 @Html.DisplayFor(modelItem => item.CreatedAt)
             </td>
             <td>
@@ -95,13 +98,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.DeletedAt)
             </td> *@
-            <td>
+                <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success"><i class="bi bi-pencil-fill"></i>&nbsp; Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary"><i class="bi bi-ticket-detailed"></i>&nbsp; Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="bi bi-trash"></i>&nbsp; Delete</a>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 

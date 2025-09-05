@@ -12,6 +12,21 @@ namespace Star_Events.Repositories.Services
         {
             _context = context;
         }
+
+        public async Task AddUsers(UserModel user)
+        {
+            try
+            {
+                _context.Add(user);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while adding a user: {ex.Message}");
+                throw; // Re-throw the exception after logging it
+            }
+        }
+
         public async Task<IList<UserModel>> GetAllUsers()
         {
             try

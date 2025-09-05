@@ -5,5 +5,6 @@ namespace Star_Events.Repositories.Interfaces
     public interface IUserRepository
     {
         Task <IList<UserModel>> GetAllUsers(); // Retrieve all users
+        Task AddUsers(UserModel user); // Add a new user
     }
 }
