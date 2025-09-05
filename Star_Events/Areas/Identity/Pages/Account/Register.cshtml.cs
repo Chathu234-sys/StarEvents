@@ -178,7 +178,7 @@ namespace Star_Events.Areas.Identity.Pages.Account
                         newUser.CreatedAt = DateTime.Now;
                         _context.Users.Add(newUser);
                         await _context.SaveChangesAsync();
-                        TempData["Message"] = "User registered successfully!";
+                        //TempData["Message"] = "User registered successfully!";
                     }
                     catch (DbUpdateConcurrencyException)
                     {

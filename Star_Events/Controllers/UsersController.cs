@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,9 +6,14 @@ using Star_Events.Business.Interfaces;
 using Star_Events.Data;
 using Star_Events.Data.Entities;
 using Star_Events.Repositories.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Star_Events.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -27,7 +29,7 @@ namespace Star_Events.Controllers
         {
             try
             {
-                var user = await _business.GetAllUsers();
+                var user = (await _business.GetAllUsers()).AsEnumerable().Where(c => c.Role == "Customer" && c.DeletedAt == null);
                 if(user != null)
                 {
                     return View(user);
@@ -38,6 +40,27 @@ namespace Star_Events.Controllers
                 }
             }
             catch(Exception ex)
+            {
+                Console.WriteLine($"Error while getting data {ex.Message}");
+                throw;
+            }
+        }
+        [ActionName("ManagerIndex")]
+        public async Task<IActionResult> IndexForManagers()
+        {
+            try
+            {
+                var user = (await _business.GetAllUsers()).AsEnumerable().Where(c => c.Role == "Manager" && c.DeletedAt == null);
+                if (user != null)
+                {
+                    return View(user);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error while getting data {ex.Message}");
                 throw;
