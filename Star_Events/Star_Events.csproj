@@ -18,9 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Business\" />
     <Folder Include="Models\ViewModels\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>

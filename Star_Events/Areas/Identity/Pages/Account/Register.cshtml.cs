@@ -168,7 +168,6 @@ namespace Star_Events.Areas.Identity.Pages.Account
                     {
                         FirstName = Input.FirstName,
                         LastName = Input.LastName,
-                        Age = Input.Age,
                         ContactNumber = Input.ContactNumber,
                         Email = Input.Email,
                         Role = Input.Role
