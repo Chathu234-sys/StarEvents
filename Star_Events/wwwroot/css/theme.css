@@ -1,0 +1,53 @@
+/* App theme enhancements: tables, cards, and buttons */
+
+/* Elegant table styling that works with Bootstrap classes */
+.theme-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.theme-table thead th {
+  background: linear-gradient(90deg, #0b5ed7, #6610f2);
+  color: #fff;
+  border: none !important;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  font-weight: 600;
+}
+
+.theme-table tbody tr {
+  transition: background-color .15s ease, transform .05s ease;
+}
+
+.theme-table tbody tr:hover {
+  background-color: rgba(59, 120, 255, .08);
+}
+
+.theme-table td,
+.theme-table th {
+  vertical-align: middle;
+}
+
+/* Subtle row dividers */
+.theme-table tbody td {
+  border-top: 1px solid rgba(138, 148, 167, .25) !important;
+}
+
+/* Card shadow refinement */
+.card.shadow-sm,
+.card.theme-card {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+  border-radius: 12px;
+}
+
+/* Soft rounded buttons */
+.btn { border-radius: 8px; }
+.btn-outline-light { border-color: #8a94a7; color: #e6e8ec; }
+.btn-outline-light:hover { background-color: #e6e8ec; color: #0f131a; }
+
+/* Make images in tables nicely rounded */
+table img { border-radius: 6px; }
+
+

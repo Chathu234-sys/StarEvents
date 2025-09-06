@@ -1,0 +1,48 @@
+﻿@model Star_Events.Data.Entities.Event
+
+<h2 class="text-white">Event Details</h2>
+<div class="card bg-dark text-light border-secondary">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                @if (!string.IsNullOrEmpty(Model.PosterUrl))
+                {
+                    <img class="img-fluid rounded" src="@Model.PosterUrl" alt="Poster" />
+                }
+            </div>
+            <div class="col-md-8">
+                <h3>@Model.Name</h3>
+                <p><strong>Date:</strong> @Model.Date.ToString("f")</p>
+                <p><strong>Category:</strong> @Model.Category</p>
+                <p><strong>Location:</strong> @Model.Location</p>
+                @if (Model.Venue != null)
+                {
+                    <p><strong>Venue:</strong> @Model.Venue.Name, @Model.Venue.City (@Model.Venue.Capacity capacity, @Model.Venue.AvailableSeats available)</p>
+                }
+                <p class="mb-0"><strong>Description:</strong></p>
+                <p class="text-secondary">@Model.Description</p>
+            </div>
+        </div>
+
+        @if (Model.TicketTypes != null && Model.TicketTypes.Any())
+        {
+            <hr />
+            <h5 class="mt-3">Ticket Types</h5>
+            <div class="row g-3">
+                @foreach (var t in Model.TicketTypes)
+                {
+                    <div class="col-md-4">
+                        <div class="card bg-secondary text-light">
+                            <div class="card-body">
+                                <h6 class="card-title">@t.Name</h6>
+                                <p class="card-text">Price: @t.Price.ToString("C")</p>
+                                <p class="card-text">Available: @t.TotalAvailable</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+<a asp-action="MyEvents" class="btn btn-secondary mt-3">Back</a>

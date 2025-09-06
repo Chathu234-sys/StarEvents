@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Star_Events.Business.Interfaces;
+using Star_Events.Business.Services;
 using Star_Events.Data;
 using Star_Events.Models;
+using Star_Events.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,11 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// Repositories & Services
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IEventService, EventService>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -35,12 +43,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
 
 // Seed roles at startup
 using (var scope = app.Services.CreateScope())

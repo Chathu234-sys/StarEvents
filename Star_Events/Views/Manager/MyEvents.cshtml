@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Star_Events.Data.Entities.Event>
+
+<h2>My Events</h2>
+<a asp-action="Create" class="btn btn-primary">Create New Event</a>
+
+<table class="table table-dark theme-table mt-3">
+    <thead>
+        <tr>
+            <th>Poster</th>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Location</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ev in Model)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(ev.PosterUrl))
+                    {
+                        <img src="@ev.PosterUrl" alt="Poster" width="80" height="100" />
+                    }
+                </td>
+                <td>@ev.Name</td>
+                <td>@ev.Date.ToShortDateString()</td>
+                <td>@ev.Category</td>
+                <td>@ev.Location</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@ev.Id" class="btn btn-info btn-sm">View</a>
+                    <a asp-action="Edit" asp-route-id="@ev.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@ev.Id" class="btn btn-danger btn-sm">Delete</a>
+                    <a asp-action="TicketSales" asp-route-eventId="@ev.Id" class="btn btn-outline-light btn-sm">Sales & Revenue</a>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>

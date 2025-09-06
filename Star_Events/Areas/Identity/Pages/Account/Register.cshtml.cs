@@ -177,7 +177,7 @@ namespace Star_Events.Areas.Identity.Pages.Account
                     try
                     {
                         newUser.CreatedAt = DateTime.Now;
-                        _context.Users.Add(newUser);
+                        _context.UserProfiles.Add(newUser);
                         await _context.SaveChangesAsync();
                         TempData["Message"] = "User registered successfully!";
                     }
@@ -186,7 +186,7 @@ namespace Star_Events.Areas.Identity.Pages.Account
                         Console.WriteLine("Error while adding data!");
                         throw;
                     }
-                    catch(Exception ex)
+                    catch(Exception)
                     {
                         Console.WriteLine("Error while adding data!");
                     }

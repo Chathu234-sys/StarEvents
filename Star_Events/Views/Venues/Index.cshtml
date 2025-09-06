@@ -1,0 +1,33 @@
+@model IEnumerable<Star_Events.Data.Entities.Venue>
+@{
+    ViewData["Title"] = "Venues";
+}
+<h2 class="text-white">Venues</h2>
+<p>
+    <a class="btn btn-primary" href="@Url.Action("Create")">Create Venue</a>
+</p>
+<table class="table table-dark table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>City</th>
+            <th>Capacity</th>
+            <th>Available</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var v in Model)
+        {
+            <tr>
+                <td>@v.Name</td>
+                <td>@v.City</td>
+                <td>@v.Capacity</td>
+                <td>@v.AvailableSeats</td>
+                <td><a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = v.Id })">Edit</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

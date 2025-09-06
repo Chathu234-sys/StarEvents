@@ -7,3 +7,5 @@ obj/
 *.cache
 *.log
 *.db
+/Star_Events/AppSetting.json
+/Star_Events/appsettings.json

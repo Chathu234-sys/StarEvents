@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Star_Events.styles.css" asp-append-version="true" />
 </head>
 <body>
@@ -25,6 +26,13 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Manager</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" asp-area="" asp-controller="Manager" asp-action="MyEvents">My Events</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Venues" asp-action="Index">Venues</a>
+                            </div>
                         </li>
                         
                         @* <li class="nav-item dropdown">

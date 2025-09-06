@@ -1,0 +1,76 @@
+﻿@model Star_Events.Models.ViewModels.EventCreateViewModel
+
+<h2>Create Event</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Date"></label>
+        <input asp-for="Date" type="date" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Category"></label>
+        <input asp-for="Category" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Location"></label>
+        <input asp-for="Location" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label class="form-label">Venue</label>
+        <select class="form-select" asp-for="VenueId" asp-items="Model.Venues">
+            <option value="">-- Select Venue --</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+    <fieldset class="border rounded p-3 mt-3">
+        <legend class="float-none w-auto px-2">Ticket Types</legend>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="card bg-dark text-light border-secondary">
+                    <div class="card-body">
+                        <h6 class="card-title">VIP</h6>
+                        <label class="form-label">Price</label>
+                        <input class="form-control" asp-for="VipPrice" type="number" step="0.01" />
+                        <label class="form-label mt-2">Total</label>
+                        <input class="form-control" asp-for="VipTotal" type="number" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-dark text-light border-secondary">
+                    <div class="card-body">
+                        <h6 class="card-title">Regular</h6>
+                        <label class="form-label">Price</label>
+                        <input class="form-control" asp-for="RegularPrice" type="number" step="0.01" />
+                        <label class="form-label mt-2">Total</label>
+                        <input class="form-control" asp-for="RegularTotal" type="number" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-dark text-light border-secondary">
+                    <div class="card-body">
+                        <h6 class="card-title">Children</h6>
+                        <label class="form-label">Price</label>
+                        <input class="form-control" asp-for="ChildrenPrice" type="number" step="0.01" />
+                        <label class="form-label mt-2">Total</label>
+                        <input class="form-control" asp-for="ChildrenTotal" type="number" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group mt-3">
+        <label>Event Poster</label>
+        <input type="file" name="poster" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-success mt-3">Save</button>
+</form>
+

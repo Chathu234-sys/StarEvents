@@ -8,7 +8,7 @@ using Star_Events.Data;
 
 #nullable disable
 
-namespace Star_Events.Data.Migrations
+namespace Star_Events.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -159,8 +159,6 @@ namespace Star_Events.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-<<<<<<< Updated upstream
-=======
             modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
                 {
                     b.Property<Guid>("Id")
@@ -182,10 +180,6 @@ namespace Star_Events.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ManagerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -196,9 +190,6 @@ namespace Star_Events.Data.Migrations
                     b.Property<decimal>("TicketPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<TimeSpan>("Time")
-                        .HasColumnType("time");
 
                     b.Property<Guid?>("VenueId")
                         .HasColumnType("uniqueidentifier");
@@ -310,7 +301,7 @@ namespace Star_Events.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("UserProfiles");
                 });
 
             modelBuilder.Entity("Star_Events.Data.Entities.Venue", b =>
@@ -350,7 +341,6 @@ namespace Star_Events.Data.Migrations
                     b.ToTable("Venues");
                 });
 
->>>>>>> Stashed changes
             modelBuilder.Entity("Star_Events.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -481,8 +471,6 @@ namespace Star_Events.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
-<<<<<<< Updated upstream
-=======
 
             modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
                 {
@@ -530,7 +518,6 @@ namespace Star_Events.Data.Migrations
                 {
                     b.Navigation("Events");
                 });
->>>>>>> Stashed changes
 #pragma warning restore 612, 618
         }
     }
