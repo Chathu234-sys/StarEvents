@@ -9,11 +9,20 @@ using Star_Events.Data;
 
 #nullable disable
 
+<<<<<<< HEAD:Star_Events/Migrations/20250906163351_Initial_Clean.Designer.cs
 namespace Star_Events.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
 <<<<<<<< HEAD:Star_Events/Migrations/20250906163351_Initial_Clean.Designer.cs
 <<<<<<<< HEAD:Star_Events/Migrations/20250906163351_Initial_Clean.Designer.cs
+<<<<<<<< HEAD:Star_Events/Migrations/20250906163351_Initial_Clean.Designer.cs
+========
+>>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/20250904124825_AddApplicationUserClass.Designer.cs
+=======
+namespace Star_Events.Data.Migrations
+{
+    [DbContext(typeof(ApplicationDbContext))]
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/20250906163351_Initial_Clean.Designer.cs
 <<<<<<<< Updated upstream:Star_Events/Data/Migrations/20250904124825_AddApplicationUserClass.Designer.cs
     [Migration("20250904124825_AddApplicationUserClass")]
     partial class AddApplicationUserClass
@@ -21,6 +30,8 @@ namespace Star_Events.Migrations
     [Migration("20250906163351_Initial_Clean")]
     partial class Initial_Clean
 >>>>>>>> Stashed changes:Star_Events/Data/Migrations/20250906163351_Initial_Clean.Designer.cs
+<<<<<<< HEAD:Star_Events/Migrations/20250906163351_Initial_Clean.Designer.cs
+<<<<<<<< HEAD:Star_Events/Migrations/20250906163351_Initial_Clean.Designer.cs
 ========
     [Migration("20250905084829_init")]
     partial class init
@@ -29,6 +40,10 @@ namespace Star_Events.Migrations
     [Migration("20250906173549_RenameUserProfilesToUsers")]
     partial class RenameUserProfilesToUsers
 >>>>>>>> 57bb9fd (Create Event files):Star_Events/Migrations/20250906173549_RenameUserProfilesToUsers.Designer.cs
+========
+>>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/20250904124825_AddApplicationUserClass.Designer.cs
+=======
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/20250906163351_Initial_Clean.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -177,6 +192,7 @@ namespace Star_Events.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+<<<<<<< HEAD:Star_Events/Migrations/20250906163351_Initial_Clean.Designer.cs
 <<<<<<<< HEAD:Star_Events/Migrations/20250906163351_Initial_Clean.Designer.cs
 <<<<<<<< HEAD:Star_Events/Migrations/20250906163351_Initial_Clean.Designer.cs
 ========
@@ -374,6 +390,8 @@ namespace Star_Events.Migrations
                 });
 
 >>>>>>>> 57bb9fd (Create Event files):Star_Events/Migrations/20250906173549_RenameUserProfilesToUsers.Designer.cs
+=======
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/20250906163351_Initial_Clean.Designer.cs
             modelBuilder.Entity("Star_Events.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -504,6 +522,7 @@ namespace Star_Events.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
+<<<<<<< HEAD:Star_Events/Migrations/20250906163351_Initial_Clean.Designer.cs
 
             modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
                 {
@@ -551,6 +570,8 @@ namespace Star_Events.Migrations
                 {
                     b.Navigation("Events");
                 });
+=======
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/20250906163351_Initial_Clean.Designer.cs
 #pragma warning restore 612, 618
         }
     }

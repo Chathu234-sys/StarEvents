@@ -159,11 +159,16 @@ namespace Star_Events.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+<<<<<<< HEAD:Star_Events/Migrations/ApplicationDbContextModelSnapshot.cs
 <<<<<<< HEAD
 =======
 <<<<<<< Updated upstream
 =======
 >>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/ApplicationDbContextModelSnapshot.cs
             modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
                 {
                     b.Property<Guid>("Id")
@@ -185,13 +190,19 @@ namespace Star_Events.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+<<<<<<< HEAD:Star_Events/Migrations/ApplicationDbContextModelSnapshot.cs
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/ApplicationDbContextModelSnapshot.cs
                     b.Property<string>("ManagerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+<<<<<<< HEAD:Star_Events/Migrations/ApplicationDbContextModelSnapshot.cs
 >>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
+=======
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/ApplicationDbContextModelSnapshot.cs
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -203,12 +214,18 @@ namespace Star_Events.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+<<<<<<< HEAD:Star_Events/Migrations/ApplicationDbContextModelSnapshot.cs
 <<<<<<< HEAD
 =======
                     b.Property<TimeSpan>("Time")
                         .HasColumnType("time");
 
 >>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
+=======
+                    b.Property<TimeSpan>("Time")
+                        .HasColumnType("time");
+
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/ApplicationDbContextModelSnapshot.cs
                     b.Property<Guid?>("VenueId")
                         .HasColumnType("uniqueidentifier");
 
@@ -285,12 +302,18 @@ namespace Star_Events.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+<<<<<<< HEAD:Star_Events/Migrations/ApplicationDbContextModelSnapshot.cs
 <<<<<<< HEAD
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
 =======
 >>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
+=======
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/ApplicationDbContextModelSnapshot.cs
                     b.Property<string>("ContactNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -322,11 +345,15 @@ namespace Star_Events.Migrations
 
                     b.HasKey("Id");
 
+<<<<<<< HEAD:Star_Events/Migrations/ApplicationDbContextModelSnapshot.cs
 <<<<<<< HEAD
                     b.ToTable("UserProfiles");
 =======
                     b.ToTable("Users", (string)null);
 >>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
+=======
+                    b.ToTable("Users", (string)null);
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/ApplicationDbContextModelSnapshot.cs
                 });
 
             modelBuilder.Entity("Star_Events.Data.Entities.Venue", b =>
@@ -366,10 +393,14 @@ namespace Star_Events.Migrations
                     b.ToTable("Venues");
                 });
 
+<<<<<<< HEAD:Star_Events/Migrations/ApplicationDbContextModelSnapshot.cs
 <<<<<<< HEAD
 =======
 >>>>>>> Stashed changes
 >>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/ApplicationDbContextModelSnapshot.cs
             modelBuilder.Entity("Star_Events.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -500,11 +531,16 @@ namespace Star_Events.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
+<<<<<<< HEAD:Star_Events/Migrations/ApplicationDbContextModelSnapshot.cs
 <<<<<<< HEAD
 =======
 <<<<<<< Updated upstream
 =======
 >>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/ApplicationDbContextModelSnapshot.cs
 
             modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
                 {
@@ -552,10 +588,14 @@ namespace Star_Events.Migrations
                 {
                     b.Navigation("Events");
                 });
+<<<<<<< HEAD:Star_Events/Migrations/ApplicationDbContextModelSnapshot.cs
 <<<<<<< HEAD
 =======
 >>>>>>> Stashed changes
 >>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6a91209 (Resolve conflicts and apply latest changes):Star_Events/Data/Migrations/ApplicationDbContextModelSnapshot.cs
 #pragma warning restore 612, 618
         }
     }
