@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Star_Events.Data.Entities;
 using Star_Events.Models;
@@ -11,5 +11,30 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
-    public DbSet<UserModel> Users { get; set; }
+    public new DbSet<UserModel> Users { get; set; }
+    public DbSet<Event> Events { get; set; }
+    public DbSet<Venue> Venues { get; set; }
+    public DbSet<TicketType> TicketTypes { get; set; }
+    public DbSet<TicketSale> TicketSales { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        // Set decimal precision
+        builder.Entity<Event>()
+            .Property(e => e.TicketPrice)
+            .HasPrecision(18, 2);
+
+        builder.Entity<TicketType>()
+            .Property(t => t.Price)
+            .HasPrecision(18, 2);
+
+        builder.Entity<TicketSale>()
+            .Property(s => s.TotalAmount)
+            .HasPrecision(18, 2);
+
+        // Map custom user profile entity to Users table
+        builder.Entity<UserModel>().ToTable("Users");
+    }
 }

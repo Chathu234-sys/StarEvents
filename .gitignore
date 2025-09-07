@@ -7,3 +7,10 @@ obj/
 *.cache
 *.log
 *.db
+<<<<<<< HEAD
+/Star_Events/AppSetting.json
+/Star_Events/appsettings.json
+=======
+# Ignore appsettings.json
+appsettings.json
+>>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3

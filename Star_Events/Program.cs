@@ -18,13 +18,12 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// Repositories & Services
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IEventService, EventService>();
+
 builder.Services.AddControllersWithViews();
-
-//Repository
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-//Business
-builder.Services.AddScoped<IUserBusiness, UserBusiness>();
 
 var app = builder.Build();
 
@@ -45,12 +44,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
 
 // Seed roles at startup
 using (var scope = app.Services.CreateScope())
