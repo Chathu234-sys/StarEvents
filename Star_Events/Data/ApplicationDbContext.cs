@@ -12,4 +12,4 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
     }
     public DbSet<UserModel> Users { get; set; }
-    }
+}
