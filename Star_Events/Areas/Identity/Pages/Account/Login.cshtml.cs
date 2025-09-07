@@ -131,9 +131,13 @@ namespace Star_Events.Areas.Identity.Pages.Account
                 {
                     // Enforce selected role membership
                     var user = await _userManager.FindByEmailAsync(Input.Email);
+                    var roles = await _userManager.GetRolesAsync(user);
                     if (user != null && await _userManager.IsInRoleAsync(user, Input.Role))
                     {
-                        _logger.LogInformation("User logged in.");
+                        if (roles.Contains("Admin"))
+                        {
+                            return RedirectToAction("Index", "Users"); // Redirect Admin to UsersController Index
+                        }
                         return LocalRedirect(returnUrl);
                     }
                     await _signInManager.SignOutAsync();

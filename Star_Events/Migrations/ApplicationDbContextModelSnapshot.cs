@@ -159,6 +159,11 @@ namespace Star_Events.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
             modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
                 {
                     b.Property<Guid>("Id")
@@ -180,6 +185,13 @@ namespace Star_Events.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+<<<<<<< HEAD
+=======
+                    b.Property<string>("ManagerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+>>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -191,6 +203,12 @@ namespace Star_Events.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+<<<<<<< HEAD
+=======
+                    b.Property<TimeSpan>("Time")
+                        .HasColumnType("time");
+
+>>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
                     b.Property<Guid?>("VenueId")
                         .HasColumnType("uniqueidentifier");
 
@@ -267,9 +285,12 @@ namespace Star_Events.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+<<<<<<< HEAD
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
+=======
+>>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
                     b.Property<string>("ContactNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -301,7 +322,11 @@ namespace Star_Events.Migrations
 
                     b.HasKey("Id");
 
+<<<<<<< HEAD
                     b.ToTable("UserProfiles");
+=======
+                    b.ToTable("Users", (string)null);
+>>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
                 });
 
             modelBuilder.Entity("Star_Events.Data.Entities.Venue", b =>
@@ -341,6 +366,10 @@ namespace Star_Events.Migrations
                     b.ToTable("Venues");
                 });
 
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
             modelBuilder.Entity("Star_Events.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -471,6 +500,11 @@ namespace Star_Events.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
 
             modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
                 {
@@ -518,6 +552,10 @@ namespace Star_Events.Migrations
                 {
                     b.Navigation("Events");
                 });
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3
 #pragma warning restore 612, 618
         }
     }

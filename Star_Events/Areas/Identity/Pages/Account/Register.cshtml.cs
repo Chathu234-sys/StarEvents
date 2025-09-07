@@ -168,7 +168,6 @@ namespace Star_Events.Areas.Identity.Pages.Account
                     {
                         FirstName = Input.FirstName,
                         LastName = Input.LastName,
-                        Age = Input.Age,
                         ContactNumber = Input.ContactNumber,
                         Email = Input.Email,
                         Role = Input.Role
@@ -179,7 +178,7 @@ namespace Star_Events.Areas.Identity.Pages.Account
                         newUser.CreatedAt = DateTime.Now;
                         _context.UserProfiles.Add(newUser);
                         await _context.SaveChangesAsync();
-                        TempData["Message"] = "User registered successfully!";
+                        //TempData["Message"] = "User registered successfully!";
                     }
                     catch (DbUpdateConcurrencyException)
                     {

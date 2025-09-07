@@ -1,0 +1,166 @@
+﻿@model Star_Events.Data.Entities.UserModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<style>
+    #form1 {
+        background-color: rgba(255, 255, 255, 0.95);
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 30px;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+        #form1 .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        #form1 .form-label {
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 0.6rem;
+            font-size: 16px;
+        }
+
+        #form1 .form-control {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+            #form1 .form-control:focus {
+                border-color: #4299e1;
+                box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+                outline: none;
+            }
+
+        #form1 select.form-control {
+            cursor: pointer;
+            background-color: white;
+        }
+
+        #form1 .text-danger {
+            font-size: 14px;
+            margin-top: 6px;
+            display: block;
+            color: #e53e3e;
+        }
+
+        #form1 .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        #form1 .btn-primary {
+            background-color: #4299e1;
+            color: white;
+        }
+
+            #form1 .btn-primary:hover {
+                background-color: #3182ce;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+        #form1 .btn-danger {
+            background-color: #e53e3e;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            #form1 .btn-danger:hover {
+                background-color: #c53030;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+        #form1 .bi {
+            margin-right: 6px;
+        }
+
+    .row {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+        .row h2 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+    .col-md-4 {
+        flex: 0 0 100%;
+        max-width: 600px;
+    }
+</style>
+
+
+
+@* <h4>UserModel</h4> *@
+
+<div class="row">
+    <h2 class="text-white">Create User</h2>
+    <div class="col-md-4">
+        <form asp-action="Create" id="form1" method="post" style="width:100%; background-color:transparent;">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="form-label mt-4"></label>
+                <input asp-for="FirstName" class="form-control" placeholder="First Name"/>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="form-label mt-4"></label>
+                <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContactNumber" class="form-label mt-4"></label>
+                <input asp-for="ContactNumber" class="form-control" placeholder="Contact Number" />
+                <span asp-validation-for="ContactNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="form-label mt-4"></label>
+                <input asp-for="Email" class="form-control" placeholder="Email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Role" class="form-label mt-4"></label>
+                <select asp-for="Role" class="form-control">
+                    <option>Customer</option>
+                    <option>Manager</option>
+                </select>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" /> &nbsp;
+                <a asp-controller="Users" asp-action="Index" class="btn btn-danger"><i class="bi bi-x-circle"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

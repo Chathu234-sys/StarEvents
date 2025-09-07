@@ -3,17 +3,30 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Star_Events.Data;
 
 #nullable disable
 
-namespace Star_Events.Data.Migrations
+namespace Star_Events.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+<<<<<<<< HEAD:Star_Events/Migrations/20250906163351_Initial_Clean.Designer.cs
+<<<<<<<< Updated upstream:Star_Events/Data/Migrations/20250904124825_AddApplicationUserClass.Designer.cs
+    [Migration("20250904124825_AddApplicationUserClass")]
+    partial class AddApplicationUserClass
+========
+    [Migration("20250906163351_Initial_Clean")]
+    partial class Initial_Clean
+>>>>>>>> Stashed changes:Star_Events/Data/Migrations/20250906163351_Initial_Clean.Designer.cs
+========
+    [Migration("20250905084829_init")]
+    partial class init
+>>>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3:Star_Events/Migrations/20250905084829_init.Designer.cs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,115 +172,8 @@ namespace Star_Events.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-<<<<<<< Updated upstream
-=======
-            modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ManagerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PosterUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TicketPrice")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<TimeSpan>("Time")
-                        .HasColumnType("time");
-
-                    b.Property<Guid?>("VenueId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VenueId");
-
-                    b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("Star_Events.Data.Entities.TicketSale", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("EventId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("SaleDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("TicketTypeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
-
-                    b.HasIndex("TicketTypeId");
-
-                    b.ToTable("TicketSales");
-                });
-
-            modelBuilder.Entity("Star_Events.Data.Entities.TicketType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("EventId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("TotalAvailable")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
-
-                    b.ToTable("TicketTypes");
-                });
-
+<<<<<<<< HEAD:Star_Events/Migrations/20250906163351_Initial_Clean.Designer.cs
+========
             modelBuilder.Entity("Star_Events.Data.Entities.UserModel", b =>
                 {
                     b.Property<int>("Id")
@@ -275,9 +181,6 @@ namespace Star_Events.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
 
                     b.Property<string>("ContactNumber")
                         .IsRequired()
@@ -310,47 +213,10 @@ namespace Star_Events.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Star_Events.Data.Entities.Venue", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("AvailableSeats")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Capacity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Venues");
-                });
-
->>>>>>> Stashed changes
+>>>>>>>> 7f4deaa2bfa7f8497eda1c90fd6636021897b4c3:Star_Events/Migrations/20250905084829_init.Designer.cs
             modelBuilder.Entity("Star_Events.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -481,56 +347,6 @@ namespace Star_Events.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
-<<<<<<< Updated upstream
-=======
-
-            modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
-                {
-                    b.HasOne("Star_Events.Data.Entities.Venue", "Venue")
-                        .WithMany("Events")
-                        .HasForeignKey("VenueId");
-
-                    b.Navigation("Venue");
-                });
-
-            modelBuilder.Entity("Star_Events.Data.Entities.TicketSale", b =>
-                {
-                    b.HasOne("Star_Events.Data.Entities.Event", null)
-                        .WithMany("TicketSales")
-                        .HasForeignKey("EventId");
-
-                    b.HasOne("Star_Events.Data.Entities.TicketType", "TicketType")
-                        .WithMany()
-                        .HasForeignKey("TicketTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TicketType");
-                });
-
-            modelBuilder.Entity("Star_Events.Data.Entities.TicketType", b =>
-                {
-                    b.HasOne("Star_Events.Data.Entities.Event", "Event")
-                        .WithMany("TicketTypes")
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Event");
-                });
-
-            modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
-                {
-                    b.Navigation("TicketSales");
-
-                    b.Navigation("TicketTypes");
-                });
-
-            modelBuilder.Entity("Star_Events.Data.Entities.Venue", b =>
-                {
-                    b.Navigation("Events");
-                });
->>>>>>> Stashed changes
 #pragma warning restore 612, 618
         }
     }
