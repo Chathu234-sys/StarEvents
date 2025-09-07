@@ -1,0 +1,146 @@
+﻿@model Star_Events.Data.Entities.Event
+
+<h2 class="fw-bold text-white mb-4" style="font-size: 2.2rem;">
+    <i class="bi bi-ticket-perforated-fill text-warning me-2"></i> Event Details
+</h2>
+
+<div class="card event-details-card shadow-lg border-0 rounded-4 overflow-hidden">
+    <div class="row g-0">
+        <!-- Poster -->
+        <div class="col-md-5">
+            @if (!string.IsNullOrEmpty(Model.PosterUrl))
+            {
+                <img class="img-fluid h-100 w-100 object-fit-cover" src="@Model.PosterUrl" alt="Poster" />
+            }
+            else
+            {
+                <div class="bg-secondary text-white h-100 d-flex align-items-center justify-content-center">
+                    <span class="fw-bold fs-4">No Poster Available</span>
+                </div>
+            }
+        </div>
+
+        <!-- Event Info -->
+        <div class="col-md-7 p-4 d-flex flex-column">
+            <!-- Category + Location -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge category-badge px-3 py-2 fs-6">@Model.Category</span>
+                <span class="badge location-badge fs-6"><i class="bi bi-geo-alt"></i> @Model.Location</span>
+            </div>
+
+            <!-- Event Title -->
+            <h2 class="fw-bold text-white mb-3" style="font-size: 1.8rem;">@Model.Name</h2>
+
+            <!-- Date & Time -->
+            <div class="d-flex gap-5 my-3">
+                <div>
+                    <div class="fw-bold text-white fs-5">
+                        <i class="bi bi-calendar-event me-2 text-warning"></i>
+                        @Model.Date.ToString("MMM dd, yyyy")
+                    </div>
+                    <small class="text-muted">Date</small>
+                </div>
+                <div>
+                    <div class="fw-bold text-white fs-5">
+                        <i class="bi bi-alarm me-2 text-danger"></i>
+                        @Model.Time.ToString(@"hh\:mm") @DateTime.Today.Add(Model.Time).ToString("tt")
+                    </div>
+                    <small class="text-muted">Time</small>
+                </div>
+            </div>
+
+            <!-- Venue -->
+            @if (Model.Venue != null)
+            {
+                <p class="mb-2 fs-5 text-white">
+                    <i class="bi bi-building text-info me-2"></i>
+                    <strong>Venue:</strong> @Model.Venue.Name, @Model.Venue.City
+                </p>
+                <small class="text-muted">Capacity: @Model.Venue.Capacity | Available: @Model.Venue.AvailableSeats</small>
+            }
+
+            <!-- Description -->
+            <div class="mt-4">
+                <p class="fw-bold text-white fs-5 mb-1">
+                    <i class="bi bi-journal-text text-success me-2"></i>Description
+                </p>
+                <p class="text-white fs-6">
+                    @(string.IsNullOrWhiteSpace(Model.Description)
+                        ? "No description available."
+                        : Html.Raw(Model.Description))
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticket Types -->
+    @if (Model.TicketTypes != null && Model.TicketTypes.Any())
+    {
+        <hr class="border-secondary" />
+        <div class="p-4">
+            <h4 class="fw-bold text-white mb-3 fs-4">
+                <i class="bi bi-ticket-detailed text-info me-2"></i> Ticket Types
+            </h4>
+            <div class="row g-3">
+                @foreach (var t in Model.TicketTypes)
+                {
+                    <div class="col-md-4">
+                        <div class="card ticket-card shadow-sm border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold text-white mb-3">@t.Name</h5>
+                                <p class="card-text text-white fs-6">
+                                    <i class="bi bi-cash-coin text-warning me-2"></i>
+                                    Price: <span class="fw-bold text-success">@t.Price.ToString("C")</span>
+                                </p>
+                                <p class="card-text text-white fs-6">
+                                    <i class="bi bi-box-seam text-primary me-2"></i>
+                                    Available: <span class="fw-bold">@t.TotalAvailable</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<a asp-action="MyEvents" class="btn btn-secondary mt-4">⬅ Back to My Events</a>
+
+<style>
+    body {
+        background-color: #0d1117; /* dark theme */
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .event-details-card {
+        background: #1c1f26;
+        color: #f8f9fa;
+    }
+
+    .category-badge {
+        background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        border-radius: 12px;
+        font-size: 1rem;
+        color: #fff;
+    }
+
+    .location-badge {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        font-size: 0.95rem;
+        color: #fff;
+        padding: 6px 12px;
+    }
+
+    .ticket-card {
+        background: #2a2f3a;
+        border-radius: 14px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .ticket-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+        }
+</style> 

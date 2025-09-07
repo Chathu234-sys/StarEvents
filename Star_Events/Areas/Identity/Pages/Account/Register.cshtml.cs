@@ -185,7 +185,7 @@ namespace Star_Events.Areas.Identity.Pages.Account
                         Console.WriteLine("Error while adding data!");
                         throw;
                     }
-                    catch(Exception ex)
+                    catch(Exception)
                     {
                         Console.WriteLine("Error while adding data!");
                     }

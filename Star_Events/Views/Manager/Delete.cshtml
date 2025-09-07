@@ -1,0 +1,19 @@
+﻿@model Star_Events.Data.Entities.Event
+
+<h2>Delete Event</h2>
+
+<div class="alert alert-danger">
+    Are you sure you want to delete <strong>@Model.Name</strong>?
+</div>
+
+@if (!string.IsNullOrEmpty(Model.PosterUrl))
+{
+    <img src="@Model.PosterUrl" alt="Poster" width="200" class="mb-3" />
+}
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="MyEvents" class="btn btn-secondary">Cancel</a>
+</form>
