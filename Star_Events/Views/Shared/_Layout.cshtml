@@ -27,13 +27,15 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Manager</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" asp-area="" asp-controller="Manager" asp-action="MyEvents">My Events</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Venues" asp-action="Index">Venues</a>
-                            </div>
-                        </li>
+                        @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Manager" asp-action="MyEvents">My Events</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Venues" asp-action="Index">Venues</a>
+                            </li>
+                        }
                         
                         @* <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>

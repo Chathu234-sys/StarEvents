@@ -4,7 +4,8 @@ using Star_Events.Business.Interfaces;
 using Star_Events.Business.Services;
 using Star_Events.Data;
 using Star_Events.Models;
-using Star_Events.Repositories;
+using Star_Events.Repositories.Interfaces;
+using Star_Events.Repositories.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

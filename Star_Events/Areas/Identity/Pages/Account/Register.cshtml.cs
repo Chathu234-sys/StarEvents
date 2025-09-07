@@ -176,7 +176,7 @@ namespace Star_Events.Areas.Identity.Pages.Account
                     try
                     {
                         newUser.CreatedAt = DateTime.Now;
-                        _context.UserProfiles.Add(newUser);
+                        _context.Users.Add(newUser);
                         await _context.SaveChangesAsync();
                         //TempData["Message"] = "User registered successfully!";
                     }

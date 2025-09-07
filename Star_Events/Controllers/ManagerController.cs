@@ -60,6 +60,7 @@ namespace Star_Events.Controllers
                     Id = Guid.NewGuid(),
                     Name = model.Name,
                     Date = model.Date,
+                    Time = model.Time,
                     Category = model.Category,
                     Location = model.Location,
                     Description = model.Description,

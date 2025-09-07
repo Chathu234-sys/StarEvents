@@ -13,6 +13,10 @@ namespace Star_Events.Models.ViewModels
         public DateTime Date { get; set; } = DateTime.UtcNow.Date;
 
         [Required]
+        [DataType(DataType.Time)]
+        public TimeSpan Time { get; set; } = new TimeSpan(18, 0, 0);
+
+        [Required]
         public string Category { get; set; } = string.Empty;
 
         [Required]

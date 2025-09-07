@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Star_Events.Data.Entities
 {
-    public class Event
+    public partial class Event
     {
         [Key]
         public Guid Id { get; set; }
@@ -12,6 +14,9 @@ namespace Star_Events.Data.Entities
 
         [Required]
         public DateTime Date { get; set; }
+
+        [Required]
+        public TimeSpan Time { get; set; }
 
         [Required]
         public string Category { get; set; } = string.Empty;
@@ -29,10 +34,11 @@ namespace Star_Events.Data.Entities
         public Guid? VenueId { get; set; }
         public Venue? Venue { get; set; }
 
-        // NEW: Ticket types
-        public ICollection<TicketType> TicketTypes { get; set; } = new List<TicketType>();
+        [Required]
+        public string ManagerId { get; set; } = string.Empty;
 
-        // NEW: Sales records
+        public ICollection<TicketType> TicketTypes { get; set; } = new List<TicketType>();
         public ICollection<TicketSale> TicketSales { get; set; } = new List<TicketSale>();
     }
 }
+

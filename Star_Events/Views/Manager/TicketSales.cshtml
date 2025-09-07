@@ -1,29 +1,140 @@
 ﻿@model IEnumerable<Star_Events.Data.Entities.TicketSale>
 
-<h2>Ticket Sales Report</h2>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Ticket Type</th>
-            <th>Quantity</th>
-            <th>Total Amount</th>
-            <th>Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var sale in Model)
+@{
+    ViewData["Title"] = "Ticket Sales Dashboard";
+    var salesData = Model
+        .GroupBy(s => s.TicketType.Name)
+        .Select(g => new
         {
-            <tr>
-                <td>@sale.TicketType.Name</td>
-                <td>@sale.Quantity</td>
-                <td>@sale.TotalAmount.ToString("C")</td>
-                <td>@sale.SaleDate.ToShortDateString()</td>
-            </tr>
-        }
-    </tbody>
-</table>
+            TicketType = g.Key,
+            Quantity = g.Sum(x => x.Quantity),
+            Amount = g.Sum(x => x.TotalAmount)
+        })
+        .ToList();
 
-<div class="alert alert-info">
-    <strong>Total Revenue: </strong> @ViewBag.TotalRevenue.ToString("C")
+    var labels = string.Join(",", salesData.Select(s => $"'{s.TicketType}'"));
+    var quantities = string.Join(",", salesData.Select(s => s.Quantity));
+    var revenues = string.Join(",", salesData.Select(s => s.Amount));
+}
+
+<div class="container mt-5">
+    <!-- Page Title -->
+    <h2 class="fw-bold text-white mb-4">
+        <i class="bi bi-graph-up-arrow text-success me-2"></i> Ticket Sales Dashboard
+    </h2>
+
+    <!-- Chart Section -->
+    <div class="row mb-5">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-lg border-0 rounded-4 p-3 bg-dark text-light">
+                <h5 class="fw-bold">Sales by Quantity</h5>
+                <canvas id="quantityChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-lg border-0 rounded-4 p-3 bg-dark text-light">
+                <h5 class="fw-bold">Revenue by Ticket Type</h5>
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Table -->
+    <div class="card shadow-lg border-0 rounded-4 p-4 bg-dark text-light mb-4">
+        <h4 class="fw-bold mb-3">Detailed Ticket Sales</h4>
+        <table class="table table-dark table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Ticket Type</th>
+                    <th>Quantity</th>
+                    <th>Total Amount</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sale in Model)
+                {
+                    <tr>
+                        <td>@sale.TicketType.Name</td>
+                        <td>@sale.Quantity</td>
+                        <td>@sale.TotalAmount.ToString("C")</td>
+                        <td>@sale.SaleDate.ToShortDateString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="alert alert-info mt-3">
+            <strong>Total Revenue: </strong> @ViewBag.TotalRevenue.ToString("C")
+        </div>
+    </div>
+
+    <!-- Export Buttons -->
+    <div class="d-flex gap-3">
+        <a asp-action="ExportToPdf" class="btn btn-danger">
+            <i class="bi bi-file-earmark-pdf me-1"></i> Download PDF
+        </a>
+        <a asp-action="ExportToExcel" class="btn btn-success">
+            <i class="bi bi-file-earmark-excel me-1"></i> Download Excel
+        </a>
+        <a asp-action="ExportToCsv" class="btn btn-primary">
+            <i class="bi bi-filetype-csv me-1"></i> Download CSV
+        </a>
+    </div>
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = [@Html.Raw(labels)];
+    const quantities = [@Html.Raw(quantities)];
+    const revenues = [@Html.Raw(revenues)];
+
+    // Quantity Chart
+    new Chart(document.getElementById("quantityChart"), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Quantity Sold",
+                data: quantities,
+                backgroundColor: "rgba(54, 162, 235, 0.7)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                borderWidth: 1
+            }]
+        }
+    });
+
+    // Revenue Chart
+    new Chart(document.getElementById("revenueChart"), {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Revenue",
+                data: revenues,
+                backgroundColor: [
+                    "#ff6384", "#36a2eb", "#ffcd56", "#4bc0c0", "#9966ff", "#ff9f40"
+                ]
+            }]
+        }
+    });
+</script>
+
+<style>
+    body {
+        background-color: #0d1117; /* Dark mode */
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    h2, h4, h5 {
+        color: #fff;
+    }
+
+    .card {
+        background: #1c1f26;
+    }
+
+    .table thead {
+        background-color: #212529;
+    }
+</style>

@@ -11,7 +11,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
-    public DbSet<UserModel> UserProfiles { get; set; }
+    public new DbSet<UserModel> Users { get; set; }
     public DbSet<Event> Events { get; set; }
     public DbSet<Venue> Venues { get; set; }
     public DbSet<TicketType> TicketTypes { get; set; }
@@ -33,5 +33,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<TicketSale>()
             .Property(s => s.TotalAmount)
             .HasPrecision(18, 2);
+
+        // Map custom user profile entity to Users table
+        builder.Entity<UserModel>().ToTable("Users");
     }
 }

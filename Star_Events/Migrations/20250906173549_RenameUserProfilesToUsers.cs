@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Star_Events.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial_All : Migration
+    public partial class RenameUserProfilesToUsers : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -55,7 +55,7 @@ namespace Star_Events.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserProfiles",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -72,7 +72,7 @@ namespace Star_Events.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserProfiles", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -352,7 +352,7 @@ namespace Star_Events.Migrations
                 name: "TicketSales");
 
             migrationBuilder.DropTable(
-                name: "UserProfiles");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
