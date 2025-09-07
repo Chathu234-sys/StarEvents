@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Star_Events.Business.Interfaces;
-using Star_Events.Business.Services;
 using Star_Events.Data;
 using Star_Events.Models;
 using Star_Events.Repositories.Interfaces;
 using Star_Events.Repositories.Services;
+using Star_Events.Business.Services;
+using Star_Events.Business.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,9 +19,13 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Repositories & Services
+// Events
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEventService, EventService>();
+
+// Bookings
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 builder.Services.AddControllersWithViews();
 

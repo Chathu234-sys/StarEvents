@@ -1,0 +1,74 @@
+@model IEnumerable<Star_Events.Data.Entities.Booking>
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<div class="container py-5" style="background-color:#0b0e14;min-height:100vh;">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1 class="display-5 fw-bold text-light mb-2"><i class="fas fa-ticket-alt me-2 text-primary"></i>My Bookings</h1>
+            <p class="text-muted">View and manage your event bookings</p>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+        @foreach (var booking in Model)
+        {
+            <div class="col-lg-6">
+                <div class="card h-100 border-0 shadow" style="background:#111827;color:#e5e7eb;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="fw-bold mb-1">@booking.Event.Name</h5>
+                                <p class="text-muted small mb-0">Booking #@booking.Id.ToString("D6")</p>
+                            </div>
+                            <span class="badge bg-success">@booking.Status</span>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6"><small class="text-muted">Event Date</small><br /><strong>@booking.Event.Date.ToString("MMM dd, yyyy")</strong></div>
+                            <div class="col-6"><small class="text-muted">Event Time</small><br /><strong>@booking.Event.Time</strong></div>
+                        </div>
+                        <div class="mb-3">
+                            <h6 class="fw-bold mb-2">Tickets</h6>
+                            @foreach (var item in booking.BookingItems)
+                            {
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span>@item.TicketType.Name x @item.Quantity</span>
+                                    <span class="text-success">Rs. @item.TotalPrice.ToString("N0")</span>
+                                </div>
+                            }
+                            <hr />
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong>Total Amount:</strong>
+                                <strong class="h5 text-success mb-0">Rs. @booking.FinalAmount.ToString("N0")</strong>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">Booked on @booking.BookingDate.ToString("MMM dd, yyyy")</small>
+                            <a asp-action="Details" asp-route-id="@booking.Id" class="btn btn-outline-primary btn-sm"><i class="fas fa-eye me-1"></i>View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="card border-0 shadow" style="background:#111827;color:#e5e7eb;">
+                    <div class="card-body py-5">
+                        <i class="fas fa-ticket-alt fa-4x text-muted mb-3"></i>
+                        <h3 class="text-muted mb-2">No Bookings Found</h3>
+                        <p class="text-muted mb-4">Start exploring amazing events!</p>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg"><i class="fas fa-calendar-alt me-2"></i>Browse Events</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

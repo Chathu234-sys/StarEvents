@@ -36,6 +36,18 @@
                                 <a class="nav-link" asp-area="" asp-controller="Venues" asp-action="Index">Venues</a>
                             </li>
                         }
+                        @if (!(User?.Identity?.IsAuthenticated == true && User.IsInRole("Manager")))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Events</a>
+                            </li>
+                            @if (User?.Identity?.IsAuthenticated == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Bookings" asp-action="Index">My Bookings</a>
+                                </li>
+                            }
+                        }
                         
                         @* <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
