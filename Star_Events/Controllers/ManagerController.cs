@@ -28,11 +28,18 @@ namespace Star_Events.Controllers
         public async Task<IActionResult> MyEvents()
         {
             var managerId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            
+            // Debug: Log the manager ID to help troubleshoot
+            System.Diagnostics.Debug.WriteLine($"Manager ID: {managerId}");
+            
             var events = await _context.Events
                 .Where(e => e.ManagerId == managerId)
                 .Include(e => e.Venue)
                 .OrderByDescending(e => e.Date)
                 .ToListAsync();
+
+            // Debug: Log the count of events found
+            System.Diagnostics.Debug.WriteLine($"Events found for manager: {events.Count}");
 
             return View(events);
         }
