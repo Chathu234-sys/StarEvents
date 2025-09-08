@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Star_Events.Data.Entities
@@ -29,6 +30,7 @@ namespace Star_Events.Data.Entities
         [Range(0, 999999)]
         public decimal TicketPrice { get; set; }
 
+        [DisplayName("Banner")]
         public string? PosterUrl { get; set; }
 
         public Guid? VenueId { get; set; }
@@ -36,6 +38,7 @@ namespace Star_Events.Data.Entities
 
         [Required]
         public string ManagerId { get; set; } = string.Empty;
+        public UserModel? Users { get; set; } 
 
         public ICollection<TicketType> TicketTypes { get; set; } = new List<TicketType>();
         public ICollection<TicketSale> TicketSales { get; set; } = new List<TicketSale>();

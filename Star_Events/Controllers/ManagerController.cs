@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Star_Events.Business.Interfaces;
 using Star_Events.Data.Entities;
 using Star_Events.Data;
+using Microsoft.AspNetCore.Identity;
+using Star_Events.Models;
 
 namespace Star_Events.Controllers
 {
@@ -14,19 +16,26 @@ namespace Star_Events.Controllers
         private readonly IEventService _eventService;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ManagerController(IEventService eventService, ApplicationDbContext context, IWebHostEnvironment env)
+        public ManagerController(IEventService eventService, ApplicationDbContext context, IWebHostEnvironment env, UserManager<ApplicationUser> userManager)
         {
             _eventService = eventService;
             _context = context;
             _env = env;
+            _userManager = userManager;
         }
 
         // GET: Manager/MyEvents
         public async Task<IActionResult> MyEvents()
         {
+            var managerId = _userManager.GetUserId(User);
+            Console.WriteLine(managerId);
+            if (managerId == null) return Unauthorized();
+
             var events = await _eventService.GetAllEventsAsync();
-            return View(events);
+            var myEvents = events.Where(e => e.ManagerId == managerId).ToList(); // Filter events by current manager
+            return View(myEvents);
         }
 
         // GET: Manager/Details/{id}
@@ -55,6 +64,8 @@ namespace Star_Events.Controllers
         {
             if (ModelState.IsValid)
             {
+                var managerId = _userManager.GetUserId(User); // Get current manager's user ID
+                if (managerId == null) return Unauthorized(); // Ensure the user is logged in
                 var ev = new Event
                 {
                     Id = Guid.NewGuid(),
@@ -64,7 +75,9 @@ namespace Star_Events.Controllers
                     Category = model.Category,
                     Location = model.Location,
                     Description = model.Description,
-                    VenueId = model.VenueId
+                    VenueId = model.VenueId,
+                    ManagerId = managerId
+
                 };
                 ev.PosterUrl = await SavePoster(poster);
                 await _eventService.CreateEventAsync(ev);

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Star_Events.Data;
@@ -6,7 +7,7 @@ using Star_Events.Data.Entities;
 
 namespace Star_Events.Controllers
 {
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager, Admin")]
     public class VenuesController : Controller
     {
         private readonly ApplicationDbContext _db;

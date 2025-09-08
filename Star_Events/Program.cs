@@ -19,8 +19,12 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Repositories & Services
+// Repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
+
+// Business Services
+builder.Services.AddScoped<IUserBusiness, UserBusiness>();
 builder.Services.AddScoped<IEventService, EventService>();
 
 builder.Services.AddControllersWithViews();
