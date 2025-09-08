@@ -35,18 +35,18 @@
                                 <p class="text-muted">@evt.Description</p>
                                 <div class="row">
                                     <div class="col-6 small text-muted">
-                                        Date<br /><strong>@evt.Date.ToString("MMM dd, yyyy")</strong>
+                                        📅 Date<br /><strong>@evt.Date.ToString("MMM dd, yyyy")</strong>
                                     </div>
                                     <div class="col-6 small text-muted">
-                                        Time<br /><strong>@evt.Time</strong>
+                                        ⏰ Time<br /><strong>@evt.Time</strong>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-6 small text-muted">
-                                        Category<br /><strong>@evt.Category</strong>
+                                        🏷️ Category<br /><strong>@evt.Category</strong>
                                     </div>
                                     <div class="col-6 small text-muted">
-                                        City<br /><strong>@evt.Location</strong>
+                                        📍 Location<br /><strong>@evt.Location</strong>
                                     </div>
                                 </div>
                             </div>
@@ -57,32 +57,40 @@
                         <input type="hidden" name="eventId" value="@evt?.Id" />
                         <h5 class="fw-bold mb-3">Select Tickets</h5>
 
-                        <div class="row">
-                            @foreach (var tt in ticketTypes)
-                            {
-                                <div class="col-md-4 mb-4">
-                                    <div class="ticket-card p-3 rounded-4 h-100" data-tt-id="@tt.Id">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <div>
-                                                <label class="fw-bold d-block">@tt.Name</label>
-                                                <p class="small text-muted mb-1">@tt.Description</p>
+                        @if (ticketTypes != null && ticketTypes.Any())
+                        {
+                            <div class="row">
+                                @foreach (var tt in ticketTypes)
+                                {
+                                    <div class="col-md-4 mb-4">
+                                        <div class="ticket-card p-3 rounded-4 h-100" data-tt-id="@tt.Id">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <div>
+                                                    <label class="fw-bold d-block">@tt.Name</label>
+                                                    <p class="small text-muted mb-1">@tt.Description</p>
+                                                </div>
+                                                <span class="badge bg-success">Available: @tt.TotalAvailable</span>
                                             </div>
-                                            <span class="badge bg-success">Available: @tt.TotalAvailable</span>
-                                        </div>
-                                        <div class="mb-3">
-                                            <span class="text-success fw-bold">Rs. @tt.Price.ToString("N0")</span>
-                                        </div>
-                                        <div class="d-flex justify-content-center">
-                                            <div class="qty-stepper">
-                                                
-                                                <input type="number" name="ticketQuantities[@tt.Id]" id="quantity-@tt.Id" value="0" min="0" max="@tt.TotalAvailable" class="qty-input text-center" onchange="updateTotal()">
-                                                
+                                            <div class="mb-3">
+                                                <span class="text-success fw-bold">Rs. @tt.Price.ToString("N0")</span>
+                                            </div>
+                                            <div class="d-flex justify-content-center">
+                                                <div class="qty-stepper">
+                                                    <input type="number" name="ticketQuantities[@tt.Id]" id="quantity-@tt.Id" value="0" min="0" max="@tt.TotalAvailable" class="qty-input text-center" onchange="updateTotal()">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            }
-                        </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                <span class="me-2">⚠️</span>
+                                No tickets available for this event.
+                            </div>
+                        }
 
                         <div class="d-grid gap-2 mt-4">
                             <button type="submit" class="btn btn-primary btn-lg" id="bookButton" disabled>
