@@ -7,6 +7,8 @@ namespace Star_Events.Data.Entities
         [Key]
         public Guid Id { get; set; }
 
+        public Guid? EventId { get; set; }
+
         public Guid TicketTypeId { get; set; }
         public TicketType TicketType { get; set; } = null!;
 
