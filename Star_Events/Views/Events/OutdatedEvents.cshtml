@@ -94,9 +94,9 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Events</a>
             <div class="dropdown-menu" style="">
-                <a class="dropdown-item active" asp-controller="Events" asp-action="Index">All</a>
+                <a class="dropdown-item" asp-controller="Events" asp-action="Index">All</a>
                 <a class="dropdown-item" asp-controller="Events" asp-action="OngoingEvents">Ongoing</a>
-                <a class="dropdown-item" asp-controller="Events" asp-action="OutdatedEvents">Outdated</a>
+                <a class="dropdown-item active" asp-controller="Events" asp-action="OutdatedEvents">Outdated</a>
             </div>
         </li>
         <li class="nav-item">
@@ -114,7 +114,7 @@
             <h2 class="text-white">Event List</h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="Manager" asp-action="Create" class="btn btn-primary">
+            <a asp-controller="Manager" asp-action="Create" class="btn btn-primary disabled">
                 <i class="bi bi-plus-circle"></i>&nbsp; Create New Event
             </a>
         </div>
@@ -158,30 +158,31 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr class="table-dark">
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Time)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            @* <td>
+        @foreach (var item in Model)
+        {
+            <tr class="table-dark">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Time)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Location)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                @* <td>
                 @Html.DisplayFor(modelItem => item.TicketPrice)
             </td> *@
-            <td>
+                <td>
                     @if (!string.IsNullOrEmpty(item.PosterUrl))
                     {
                         <img src="@item.PosterUrl" alt="User Image" style="width:100px; height:100px; object-fit:cover; border-radius:10%;" />
@@ -190,19 +191,19 @@
                     {
                         <span>No Image</span>
                     }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Venue.Name)
-            </td>
-            @* <td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Venue.Name)
+                </td>
+                @* <td>
                 @Html.DisplayFor(modelItem => item.ManagerId)
             </td> *@
-            <td>
-                    <a asp-controller="Manager" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success"><i class="bi bi-pencil-fill"></i>&nbsp; Edit</a> |
+                <td>
+                    @* <a asp-controller="Manager" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success"><i class="bi bi-pencil-fill"></i>&nbsp; Edit</a> | *@
                     <a asp-controller="Manager" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary"><i class="bi bi-ticket-detailed"></i>&nbsp; Details</a> |
                     <a asp-controller="Manager" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="bi bi-trash"></i>&nbsp; Delete</a>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -19,18 +19,26 @@
 
 <div class="container" style="display:flex; justify-content:center; align-items:center; height:10vh; border: 2px solid blue; padding:20px; border-radius:15px;">
     <ul class="nav nav-pills">
-        <li class="nav-item dropdown">
-            <a class="nav-link active dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Users</a>
-            <div class="dropdown-menu" style="">
-                <a class="dropdown-item" asp-controller="Users" asp-action="Index">Customers</a>
-                <a class="dropdown-item" asp-controller="Users" asp-action="ManagerIndex">Event Managers</a>
-            </div>
-        </li>
         <li class="nav-item">
             <a class="nav-link" href="#">Personal Info</a>
         </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Users</a>
+            <div class="dropdown-menu" style="">
+                <a class="dropdown-item active" asp-controller="Users" asp-action="Index">Customers</a>
+                <a class="dropdown-item" asp-controller="Users" asp-action="ManagerIndex">Event Managers</a>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Events</a>
+            <div class="dropdown-menu" style="">
+                <a class="dropdown-item" asp-controller="Events" asp-action="Index">All</a>
+                <a class="dropdown-item" asp-controller="Events" asp-action="OngoingEvents">Ongoing</a>
+                <a class="dropdown-item" asp-controller="Events" asp-action="OutdatedEvents">Outdated</a>
+            </div>
+        </li>
         <li class="nav-item">
-            <a class="nav-link" asp-controller="Events" asp-action="Index">Events</a>
+            <a class="nav-link" asp-controller="Venues" asp-action="Index">Venues</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#">Reports</a>

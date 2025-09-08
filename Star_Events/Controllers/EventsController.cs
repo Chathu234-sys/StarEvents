@@ -26,6 +26,25 @@ namespace Star_Events.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        // GET: Events/OutdatedEvents
+        [ActionName("OutdatedEvents")]
+        public async Task<IActionResult> OutdatedEventsIndex()
+        {
+            var applicationDbContext = _context.Events
+                .Include(e => e.Venue)
+                .Where(e => e.Date < DateTime.Today);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        [ActionName("OngoingEvents")]
+        public async Task<IActionResult> OngoingEventsIndex()
+        {
+            var applicationDbContext = _context.Events
+                .Include(e => e.Venue)
+                .Where(e => e.Date >= DateTime.Today);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
         // GET: Events/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {

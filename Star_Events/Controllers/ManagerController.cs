@@ -10,7 +10,7 @@ using Star_Events.Models;
 
 namespace Star_Events.Controllers
 {
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager, Admin")]
     public class ManagerController : Controller
     {
         private readonly IEventService _eventService;
