@@ -57,6 +57,7 @@ namespace Star_Events.Controllers
             if (ev == null) return NotFound();
             return View(ev);
         }
+
     }
 }
 

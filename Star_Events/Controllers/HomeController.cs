@@ -18,35 +18,18 @@ public class HomeController : Controller
         _eventService = eventService;
     }
 
-    public async Task<IActionResult> Index(string? category, string? city, DateTime? date)
+    public async Task<IActionResult> Index()
     {
-        var events = (await _eventService.GetAllEventsAsync()).ToList();
+        // Get upcoming events (events from today onwards)
+        var allEvents = (await _eventService.GetAllEventsAsync()).ToList();
+        var upcomingEvents = allEvents
+            .Where(e => e.Date >= DateTime.Today)
+            .OrderBy(e => e.Date)
+            .Take(6) // Show only 6 upcoming events on home page
+            .ToList();
 
-        // Build filter sources
-        ViewBag.Categories = events.Select(e => e.Category).Where(c => !string.IsNullOrWhiteSpace(c)).Distinct().OrderBy(c => c).ToList();
-        ViewBag.Cities = events.Select(e => e.Location).Where(c => !string.IsNullOrWhiteSpace(c)).Distinct().OrderBy(c => c).ToList();
-
-        // Persist filter values
-        ViewBag.SelectedCategory = category;
-        ViewBag.SelectedCity = city;
-        ViewBag.SelectedDate = date?.ToString("yyyy-MM-dd");
-
-        // Apply filters
-        if (!string.IsNullOrWhiteSpace(category))
-        {
-            events = events.Where(e => string.Equals(e.Category, category, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-        if (!string.IsNullOrWhiteSpace(city))
-        {
-            events = events.Where(e => string.Equals(e.Location, city, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-        if (date.HasValue)
-        {
-            var d = date.Value.Date;
-            events = events.Where(e => e.Date.Date == d).ToList();
-        }
-
-        return View(events);
+        ViewBag.UpcomingEvents = upcomingEvents;
+        return View();
     }
 
     //[Authorize (Roles = "Admin")]

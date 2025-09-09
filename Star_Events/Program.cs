@@ -27,6 +27,10 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 
+// Users
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserBusiness, UserBusiness>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
