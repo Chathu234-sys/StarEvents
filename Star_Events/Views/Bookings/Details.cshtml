@@ -1,0 +1,90 @@
+@model Star_Events.Data.Entities.Booking
+@{
+    ViewData["Title"] = "Booking Details";
+}
+
+<div class="container py-5" style="background-color:#0b0e14;min-height:100vh;">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card border-0 shadow" style="background:#111827;color:#d1d5db;">
+                <div class="card-body p-5">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                    }
+
+                    <div class="text-center mb-4">
+                        <i class="fas fa-receipt fa-3x text-primary mb-2"></i>
+                        <h2 class="fw-bold">Booking Confirmation</h2>
+                        <p class="text-muted">Your booking has been recorded.</p>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <h5 class="fw-bold mb-3"><i class="fas fa-info-circle me-2 text-primary"></i>Booking Information</h5>
+                            <div class="card border-0" style="background:#0f1623;">
+                                <div class="card-body">
+                                    <div class="row mb-2"><div class="col-6"><strong>Booking No:</strong></div><div class="col-6">#@Model.Id.ToString("D6")</div></div>
+                                    <div class="row mb-2"><div class="col-6"><strong>Date:</strong></div><div class="col-6">@Model.BookingDate.ToString("MMM dd, yyyy")</div></div>
+                                    <div class="row mb-2"><div class="col-6"><strong>Status:</strong></div><div class="col-6"><span class="badge bg-success">@Model.Status</span></div></div>
+                                    <div class="row mb-2"><div class="col-6"><strong>Total:</strong></div><div class="col-6"><span class="h5 text-success">Rs. @Model.FinalAmount.ToString("N0")</span></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="fw-bold mb-3"><i class="fas fa-calendar-alt me-2 text-primary"></i>Event Information</h5>
+                            <div class="card border-0" style="background:#0f1623;">
+                                <div class="card-body">
+                                    <h6 class="fw-bold">@Model.Event.Name</h6>
+                                    <p class="text-muted small">@Model.Event.Description</p>
+                                    <div class="row">
+                                        <div class="col-6"><small class="text-muted">Date</small><br /><strong>@Model.Event.Date.ToString("MMM dd, yyyy")</strong></div>
+                                        <div class="col-6"><small class="text-muted">Time</small><br /><strong>@Model.Event.Time</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-ticket-alt me-2 text-primary"></i>Ticket Details</h5>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Ticket Type</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Unit Price</th>
+                                        <th class="text-center">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var item in Model.BookingItems)
+                                {
+                                    <tr>
+                                        <td><strong>@item.TicketType.Name</strong><div class="small text-muted">@item.TicketType.Description</div></td>
+                                        <td class="text-center"><span class="badge bg-primary">@item.Quantity</span></td>
+                                        <td class="text-center">Rs. @item.UnitPrice.ToString("N0")</td>
+                                        <td class="text-center"><strong>Rs. @item.TotalPrice.ToString("N0")</strong></td>
+                                    </tr>
+                                }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Total Amount:</strong></td>
+                                        <td class="text-center"><strong class="h5 text-success">Rs. @Model.FinalAmount.ToString("N0")</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <a asp-action="Index" class="btn btn-primary btn-lg"><i class="fas fa-list me-2"></i>My Bookings</a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

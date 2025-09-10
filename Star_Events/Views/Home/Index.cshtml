@@ -1,8 +1,653 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@* <!-- Modern Hero Section -->
+<section class="hero-section bg-dark text-light d-flex align-items-center position-relative" style="min-height:100vh; overflow:hidden;">
+    <div class="container text-center">
+        <!-- Welcome Text -->
+        <h5 class="text-uppercase text-warning fw-bold mb-3 animate__animated animate__fadeInDown">
+            Welcome to StarEvents
+        </h5>
+
+        <!-- Main Title -->
+        <h1 class="display-3 fw-bold mb-4 animate__animated animate__fadeInUp" style="line-height:1.3; text-shadow:2px 2px 12px rgba(0,0,0,0.6);">
+            Where Every Event<br />Becomes a Memory
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="lead text-white-50 mb-5 animate__animated animate__fadeInUp animate__delay-1s">
+            Discover concerts, theatre, and cultural shows that bring people together.<br>
+            Book tickets easily & experience entertainment like never before.
+        </p>
+    <!-- Background Glow Effect -->
+    <div class="position-absolute top-50 start-50 translate-middle"
+         style="width: 800px; height: 600px; background: radial-gradient(circle, rgba(255,193,7,0.15) 0%, rgba(255,255,255,0) 70%); filter: blur(80px); z-index:0;">
+    </div>
+</section>
+ *@
+<!-- Upcoming Events Section -->
+<section class="upcoming-events py-5 bg-dark">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-4">Welcome to Online Ticketing</h1>
+            <p class="lead">Your premier destination for event tickets in Sri Lanka</p>
+        </div>
+
+        @if (ViewBag.UpcomingEvents != null && ((List<Star_Events.Data.Entities.Event>)ViewBag.UpcomingEvents).Any())
+        {
+            <div class="row g-4">
+                @foreach (var eventItem in (List<Star_Events.Data.Entities.Event>)ViewBag.UpcomingEvents)
+                {
+                    var isEventPassed = eventItem.Date < DateTime.Today;
+                    <div class="col-lg-4 col-md-6">
+                        <div class="event-card h-100 position-relative overflow-hidden rounded-4 shadow-lg @(isEventPassed ? "event-passed" : "")">
+                            <div class="event-image">
+                                @if (!string.IsNullOrEmpty(eventItem.PosterUrl))
+                                {
+                                    <img src="@eventItem.PosterUrl" alt="@eventItem.Name" class="img-fluid">
+                                }
+                                else
+                                {
+                                    <div class="no-image d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-calendar-event display-4 text-white"></i>
+                                    </div>
+                                }
+                                <div class="event-badge position-absolute top-0 start-0 m-3">
+                                    <span class="badge category-badge rounded-pill">@eventItem.Category</span>
+                                </div>
+                                
+                                @if (isEventPassed)
+                                {
+                                    <div class="availability-badge position-absolute top-0 end-0 m-3">
+                                        <span class="badge unavailable-badge rounded-pill">Unavailable</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="availability-badge position-absolute top-0 end-0 m-3">
+                                        <span class="badge available-badge rounded-pill">Available</span>
+                                    </div>
+                                }
+
+                                <div class="event-overlay d-flex align-items-center justify-content-center">
+                                    <a asp-controller="Events" asp-action="Details" asp-route-id="@eventItem.Id" class="btn btn-light rounded-pill">
+                                        <i class="bi bi-eye me-2"></i>View Details
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="event-content p-4">
+                                <h5 class="event-title mb-3">@eventItem.Name</h5>
+                                <p class="event-description text-white-75">
+                                    @if (!string.IsNullOrEmpty(eventItem.Description))
+                                    {
+                                        @(eventItem.Description.Length > 80 ? eventItem.Description.Substring(0, 80) + "..." : eventItem.Description)
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No description available</span>
+                                    }
+                                </p>
+                                <!-- Date & Time -->
+                                <div class="d-flex justify-content-between text-center mb-3 w-100">
+                                    <div class="flex-fill">
+                                        <div class="fw-bold text-white">
+                                            @eventItem.Date.ToString("MMM dd, yyyy")
+                                        </div>
+                                        <small class="text-muted">📅 Date</small>
+                                    </div>
+                                    <div class="flex-fill">
+                                        <div class="fw-bold text-white">
+                                            @eventItem.Time.ToString(@"hh\:mm")
+                                        </div>
+                                        <small class="text-muted">⏰ Time</small>
+                                    </div>
+                                </div>
+
+                                <div class="event-footer d-flex justify-content-between align-items-center">
+                                    @* <div>
+                                        <small class="text-muted">From</small>
+                                        <strong class="text-success">Rs. @eventItem.TicketPrice.ToString("N0")</strong>
+                                    </div> *@
+                                    @if (isEventPassed)
+                                    {
+                                        <button class="btn btn-secondary d-block w-100 py-2 fw-semibold rounded" disabled>
+                                            <i class="bi bi-x-circle me-2"></i> Event Passed
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Bookings"
+                                           asp-action="Create"
+                                           asp-route-eventId="@eventItem.Id"
+                                           class="btn btn-success d-block w-100 py-2 fw-semibold rounded">
+                                            <i class="bi bi-ticket-perforated me-2"></i> Book Now
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="text-center mt-5">
+                <a class="btn btn-outline-light btn-lg rounded-pill" asp-controller="Events" asp-action="Index">
+                    <i class="bi bi-calendar-event me-2"></i>View All Events
+                </a>
+            </div>
+        }
+        else
+        {
+            @if (ViewBag.UpcomingEvents != null && ((List<Star_Events.Data.Entities.Event>)ViewBag.UpcomingEvents).Any())
+            {
+                <div class="row g-4">
+                    @foreach (var eventItem in (List<Star_Events.Data.Entities.Event>)ViewBag.UpcomingEvents)
+                    {
+                        <!-- your existing event card -->
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-calendar-x display-1 text-muted"></i>
+                    <h4 class="text-white mt-3">No Upcoming Events</h4>
+                    <p class="text-white-75">Stay tuned for exciting new events!</p>
+                    @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Manager" asp-action="Create" class="btn btn-primary rounded-pill">
+                            <i class="bi bi-plus-circle me-2"></i>Create Event
+                        </a>
+                    }
+                </div>
+            }
+        }
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features py-5 bg-gradient">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4 rounded-4 shadow-lg animate__animated animate__fadeInUp">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-ticket-perforated"></i>
+                    </div>
+                    <h5 class="feature-title">Effortless Booking</h5>
+                    <p class="feature-description text-white-75">Securely book tickets in just a few clicks with our intuitive platform.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4 rounded-4 shadow-lg animate__animated animate__fadeInUp animate__delay-1s">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-phone"></i>
+                    </div>
+                    <h5 class="feature-title">Mobile Access</h5>
+                    <p class="feature-description text-white-75">Book and manage tickets on the go with our mobile-friendly interface.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4 rounded-4 shadow-lg animate__animated animate__fadeInUp animate__delay-2s">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h5 class="feature-title">Secure Payments</h5>
+                    <p class="feature-description text-white-75">Shop with confidence using our secure payment system.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about py-5 bg-dark">
+    <div class="container">
+        <div class="row align-items-center">
+            <!-- Add this in your <head> section -->
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+            <div class="col-lg-6">
+                <h2 class="display-6 fw-bold mb-4" style="font-family: 'Playfair Display', serif; color: #e5e5e5; text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">
+                    About StarEvents
+                </h2>
+                <p class="lead mb-4" style="font-family: 'Poppins', sans-serif; color: #cccccc; line-height: 1.8;">
+                    StarEvents is Sri Lanka’s premier platform for unforgettable live experiences, from concerts to cultural events.
+                </p>
+                <p class="mb-4" style="font-family: 'Poppins', sans-serif; color: #aaaaaa; line-height: 1.6;">
+                    We offer seamless ticket booking, instant e-tickets, and top-notch event management for organizers and attendees alike.
+                </p>
+                <a class="btn rounded-pill" asp-controller="Home" asp-action="Privacy"
+                   style="font-family: 'Poppins', sans-serif; border: 2px solid #ffffff33; color: #e5e5e5; transition: 0.3s;"
+                   onmouseover="this.style.background='#ffffff33'; this.style.color='#ffffff';"
+                   onmouseout="this.style.background='transparent'; this.style.color='#e5e5e5';">
+                    <i class="bi bi-info-circle me-2"></i>Learn More
+                </a>
+            </div>
+            <div class="col-lg-6 mt-4 mt-lg-0">
+                <div class="stats-grid">
+                    <div class="stat-item p-4 rounded-4">
+                        <div class="stat-number">1,200+</div>
+                        <div class="stat-label">Events Hosted</div>
+                    </div>
+                    <div class="stat-item p-4 rounded-4">
+                        <div class="stat-number">75K+</div>
+                        <div class="stat-label">Tickets Sold</div>
+                    </div>
+                    <div class="stat-item p-4 rounded-4">
+                        <div class="stat-number">150+</div>
+                        <div class="stat-label">Venues</div>
+                    </div>
+                    <div class="stat-item p-4 rounded-4">
+                        <div class="stat-number">4.9★</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer py-5 bg-black">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <h5 class="footer-title text-white mb-4">About StarEvents</h5>
+                <p class="text-white-75">Connecting Sri Lanka to unforgettable live experiences. Follow us for updates and exclusive events.</p>
+                <div class="social-links d-flex gap-3 mt-3">
+                    <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="social-link"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="bi bi-youtube"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <h5 class="footer-title text-white mb-4">Quick Links</h5>
+                <ul class="footer-links list-unstyled">
+                    <li><a asp-controller="Events" asp-action="Index" class="text-white-75">Events</a></li>
+                    <li><a asp-controller="Bookings" asp-action="Create" class="text-white-75">Book Tickets</a></li>
+                    <li><a asp-controller="Home" asp-action="Privacy" class="text-white-75">About Us</a></li>
+                    <li><a href="#contact" class="text-white-75">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <h5 class="footer-title text-white mb-4">Categories</h5>
+                <ul class="footer-links list-unstyled">
+                    <li><a href="#" class="text-white-75">Concerts</a></li>
+                    <li><a href="#" class="text-white-75">Theatre Shows</a></li>
+                    <li><a href="#" class="text-white-75">Cultural Events</a></li>
+                    <li><a href="#" class="text-white-75">Sports</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <h5 class="footer-title text-white mb-4">Contact Info</h5>
+                <div class="contact-info">
+                    <div class="contact-item d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-geo-alt text-primary"></i>
+                        <span class="text-white-75">Colombo, Sri Lanka</span>
+                    </div>
+                    <div class="contact-item d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-envelope text-primary"></i>
+                        <span class="text-white-75">info@starevents.lk</span>
+                    </div>
+                    <div class="contact-item d-flex align-items-center gap-2">
+                        <i class="bi bi-phone text-primary"></i>
+                        <span class="text-white-75">+94 11 123 4567</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</footer>
+
+<!-- External Styles -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --primary: #3b82f6;
+        --secondary: #10b981;
+        --dark: #0d1117;
+        --dark-light: #161b22;
+        --text-light: #f8f9fa;
+        --text-muted: #8b949e;
+    }
+
+    body {
+        background-color: var(--dark);
+        color: var(--text-light);
+        font-family: 'Inter', sans-serif;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(16, 185, 129, 0.15) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+    .hero-media {
+        max-width: 100%;
+        height: auto;
+    }
+
+        .hero-media video,
+        .hero-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            max-height: 500px;
+            border-radius: 1rem;
+        }
+
+    /* Upcoming Events */
+    .bg-dark {
+        background-color: var(--dark-light);
+    }
+
+    .bg-gradient {
+        background: linear-gradient(180deg, var(--dark-light), var(--dark));
+    }
+
+    .event-card {
+        background: var(--dark); /* your dark background variable */
+        border: 1px solid rgba(59, 130, 246, 0.2); /* semi-transparent blue border */
+        border-radius: 12px; /* smooth corners */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden; /* ensures content stays inside rounded corners */
+    }
+
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(59, 130, 246, 0.3); /* subtle blue glow */
+        }
+
+    .event-image {
+        height: 200px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+    .event-card:hover .event-image img {
+        transform: scale(1.05);
+    }
+
+    .no-image {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .event-overlay {
+        background: rgba(0, 0, 0, 0.75);
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .event-card:hover .event-overlay {
+        opacity: 1;
+    }
+
+    .event-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--text-light);
+    }
+    
+    /* Features Section */
+    .feature-card {
+        background: var(--dark-light);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(59, 130, 246, 0.3);
+        }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+        .feature-icon i {
+            font-size: 1.5rem;
+            color: var(--text-light);
+        }
+
+    .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-light);
+    }
+
+    /* About Section */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .stat-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        text-align: center;
+        transition: transform 0.3s ease;
+        border-radius: 1rem;
+    }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .stat-label {
+        color: var(--text-muted);
+    }
+
+    /* Footer */
+    .footer {
+        background: var(--dark);
+    }
+
+    .footer-title {
+        font-weight: 600;
+        color: var(--text-light);
+    }
+
+    .social-link {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .social-link:hover {
+            background: var(--primary);
+            color: var(--text-light);
+            transform: translateY(-3px);
+        }
+
+    .footer-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+    .contact-item i {
+        color: var(--primary);
+    }
+
+    .border-white-10 {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Button Styles */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), #1d4ed8);
+        border: none;
+        border-radius: 50px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+        }
+
+    .btn-outline-light {
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50px;
+        padding: 12px 24px;
+        color: var(--text-light);
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline-light:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--text-light);
+            transform: translateY(-2px);
+            color: var(--text-light);
+        }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--secondary), #059669);
+        border: none;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+        }
+
+    
+    /* Category Badge */
+    .category-badge {
+        background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        font-size: 0.8rem;
+        border-radius: 12px;
+        color: #fff;
+        font-weight: bold;
+    }
+        .category-badge:hover {
+            background-color: #ef4444;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+        }
+
+    /* Availability Badge */
+    .available-badge {
+        background: linear-gradient(135deg, #10b981, #059669);
+        font-size: 0.8rem;
+        border-radius: 12px;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .unavailable-badge {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        font-size: 0.8rem;
+        border-radius: 12px;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    /* Event Passed Styling */
+    .event-passed {
+        opacity: 0.7;
+        filter: grayscale(20%);
+    }
+
+    .event-passed:hover {
+        opacity: 0.8;
+        transform: translateY(-2px);
+    }
+
+
+    /* Responsive Design */
+    /*  screen and (max-width: 768px) { */
+        /* .hero-section */
+
+    /* { */
+        /* text-align: center; */
+    /* } */
+
+    /* .hero-media {
+        margin-top: 20px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+        text-align: center;
+    }
+
+    .footer-bottom-links {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .event-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    } */}
+</style>

@@ -1,0 +1,129 @@
+@model Star_Events.Data.Entities.Event
+@{
+    ViewData["Title"] = Model.Name;
+    var hasPoster = !string.IsNullOrEmpty(Model.PosterUrl);
+    var ticketTypes = Model.TicketTypes?.OrderBy(t => t.Price).ToList() ?? new List<Star_Events.Data.Entities.TicketType>();
+    var totalAvailable = ticketTypes.Sum(t => t.TotalAvailable);
+    var minPrice = ticketTypes.Any() ? ticketTypes.Min(t => t.Price) : Model.TicketPrice;
+    var venueName = Model.Venue?.Name ?? Model.Location;
+    var totalSeats = Model.Venue?.Capacity ?? Math.Max(totalAvailable, 0);
+    var sold = Math.Max(totalSeats - totalAvailable, 0);
+}
+
+<div class="container py-5" style="background-color:#0b0e14;min-height:100vh;">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow overflow-hidden" style="background:#111827;color:#e5e7eb;">
+                <div class="position-relative">
+                    @if (hasPoster)
+                    {
+                        <img src="@Model.PosterUrl" alt="@Model.Name" class="img-fluid w-100" style="max-height:360px;object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center justify-content-center" style="height:360px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);">
+                            <i class="fas fa-calendar-alt fa-4x text-white opacity-75"></i>
+                        </div>
+                    }
+                    @{
+                        var available = totalAvailable > 0;
+                    }
+                    <span class="category-badge position-absolute top-0 start-0 m-3 px-3 py-1">@Model.Category</span>
+                    <span class="availability-badge @(available?"available":"sold-out") position-absolute top-0 end-0 m-3 px-3 py-1">@(available?"Available":"Sold Out")</span>
+                </div>
+
+                <div class="p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h1 class="fw-bold mb-2" style="font-size:2rem;">@Model.Name</h1>
+                            <p class="text-muted mb-3">@Model.Description</p>
+                        </div>
+                        <div class="text-end">
+                            <div class="text-success fw-bold" style="font-size:1.25rem;">From Rs. @minPrice.ToString("N0")</div>
+                            <div class="small text-muted">@totalAvailable seats available</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="info-chip"><span class="me-2">📅</span><strong>Date:</strong> @Model.Date.ToString("dddd, MMMM dd, yyyy")</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-chip"><span class="me-2">⏰</span><strong>Time:</strong> @Model.Time.ToString(@"hh\:mm")</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-chip"><span class="me-2">📍</span><strong>Location:</strong> @Model.Location</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-chip"><span class="me-2">🏟️</span><strong>Venue:</strong> @venueName</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow" style="background:#111827;color:#e5e7eb;">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Available Tickets</h5>
+                    @if (ticketTypes.Any())
+                    {
+                        foreach (var tt in ticketTypes)
+                        {
+                            var ttAvailable = tt.TotalAvailable > 0;
+                            <div class="ticket-type border rounded-3 p-3 mb-3" style="border-color:rgba(255,255,255,0.1) !important;">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div class="fw-bold">@tt.Name</div>
+                                    <span class="availability-badge @(ttAvailable?"available":"sold-out") px-2 py-1">@(ttAvailable?"Available":"Sold Out")</span>
+                                </div>
+                                <div class="text-muted small mb-2">@tt.Description</div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="fw-bold text-success">Rs. @tt.Price.ToString("N0")</div>
+                                    <div class="small text-muted">@tt.TotalAvailable available</div>
+                                </div>
+                            </div>
+                        }
+                        <a class="btn btn-success w-100" asp-controller="Bookings" asp-action="Create" asp-route-eventId="@Model.Id"><i class="fas fa-ticket-alt me-2"></i>Book Tickets</a>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning d-flex align-items-center" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            No tickets available for this event.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="card border-0 shadow mt-3" style="background:#111827;color:#e5e7eb;">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Event Statistics</h6>
+                    <div class="row text-center mb-2">
+                        <div class="col">
+                            <div class="h5 mb-0 text-primary">@totalSeats</div>
+                            <div class="small text-muted">Total Seats</div>
+                        </div>
+                        <div class="col">
+                            <div class="h5 mb-0 text-success">@totalAvailable</div>
+                            <div class="small text-muted">Available</div>
+                        </div>
+                    </div>
+                    <div class="progress" style="height:8px;background:rgba(255,255,255,0.06);">
+                        <div class="progress-bar bg-success" role="progressbar" style="width:@((totalSeats>0? (100*(totalSeats-totalAvailable)/totalSeats):0))%"></div>
+                    </div>
+                    <div class="small text-muted mt-1">@sold seats sold</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .category-badge{background:linear-gradient(135deg,#6366f1,#8b5cf6);font-weight:700;border-radius:999px;color:#fff}
+        .availability-badge{border-radius:999px;font-weight:700;color:#fff}
+        .availability-badge.available{background:linear-gradient(135deg,#10b981,#22c55e)}
+        .availability-badge.sold-out{background:linear-gradient(135deg,#ef4444,#dc2626)}
+        .info-chip{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:8px 10px;color:#cbd5e1;font-size:.95rem}
+    </style>
+</div>
+
+

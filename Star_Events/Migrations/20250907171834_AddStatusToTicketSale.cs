@@ -1,30 +1,30 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Star_Events.Migrations
 {
     /// <inheritdoc />
-    public partial class AddEventTimeColumn : Migration
+    public partial class AddStatusToTicketSale : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<TimeSpan>(
-                name: "Time",
-                table: "Events",
-                type: "time",
+            migrationBuilder.AddColumn<string>(
+                name: "Status",
+                table: "TicketSales",
+                type: "nvarchar(30)",
+                maxLength: 30,
                 nullable: false,
-                defaultValue: new TimeSpan(0, 0, 0, 0, 0));
+                defaultValue: "");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Time",
-                table: "Events");
+                name: "Status",
+                table: "TicketSales");
         }
     }
 }
