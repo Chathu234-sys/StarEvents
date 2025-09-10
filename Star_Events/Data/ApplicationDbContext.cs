@@ -24,9 +24,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         base.OnModelCreating(builder);
 
         // Set decimal precision
-        builder.Entity<Event>()
-            .Property(e => e.TicketPrice)
-            .HasPrecision(18, 2);
 
         builder.Entity<TicketType>()
             .Property(t => t.Price)
@@ -40,9 +37,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .Property(b => b.TotalAmount)
             .HasPrecision(18, 2);
 
-        builder.Entity<Booking>()
-            .Property(b => b.DiscountAmount)
-            .HasPrecision(18, 2);
 
         builder.Entity<Booking>()
             .Property(b => b.FinalAmount)

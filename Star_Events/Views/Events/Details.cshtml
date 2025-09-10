@@ -4,7 +4,7 @@
     var hasPoster = !string.IsNullOrEmpty(Model.PosterUrl);
     var ticketTypes = Model.TicketTypes?.OrderBy(t => t.Price).ToList() ?? new List<Star_Events.Data.Entities.TicketType>();
     var totalAvailable = ticketTypes.Sum(t => t.TotalAvailable);
-    var minPrice = ticketTypes.Any() ? ticketTypes.Min(t => t.Price) : Model.TicketPrice;
+    var minPrice = ticketTypes.Any() ? ticketTypes.Min(t => t.Price) : 0;
     var venueName = Model.Venue?.Name ?? Model.Location;
     var totalSeats = Model.Venue?.Capacity ?? Math.Max(totalAvailable, 0);
     var sold = Math.Max(totalSeats - totalAvailable, 0);
@@ -76,7 +76,7 @@
                                     <div class="fw-bold">@tt.Name</div>
                                     <span class="availability-badge @(ttAvailable?"available":"sold-out") px-2 py-1">@(ttAvailable?"Available":"Sold Out")</span>
                                 </div>
-                                <div class="text-muted small mb-2">@tt.Description</div>
+                                <div class="text-muted small mb-2">@tt.Name</div>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="fw-bold text-success">Rs. @tt.Price.ToString("N0")</div>
                                     <div class="small text-muted">@tt.TotalAvailable available</div>

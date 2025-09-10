@@ -94,7 +94,7 @@
                         <hr />
                         @{
                             var regular = e.TicketTypes?.FirstOrDefault(tt => string.Equals(tt.Name, "Regular", StringComparison.OrdinalIgnoreCase));
-                            var price = regular?.Price ?? e.TicketPrice;
+                            var price = regular?.Price ?? (e.TicketTypes?.Min(tt => tt.Price) ?? 0);
                         }
                         <div class="d-flex align-items-center mb-3">
                             <div class="text-success fw-bold h5 mb-0">Rs. @price.ToString("N0")</div>

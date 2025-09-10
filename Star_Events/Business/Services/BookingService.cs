@@ -87,7 +87,6 @@ namespace Star_Events.Business.Services
                 EventId = eventId,
                 BookingDate = DateTime.UtcNow,
                 TotalAmount = total,
-                DiscountAmount = 0,
                 FinalAmount = total,
                 Status = BookingStatus.Pending,
                 BookingItems = items

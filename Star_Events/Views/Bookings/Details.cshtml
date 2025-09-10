@@ -62,7 +62,7 @@
                                 @foreach (var item in Model.BookingItems)
                                 {
                                     <tr>
-                                        <td><strong>@item.TicketType.Name</strong><div class="small text-muted">@item.TicketType.Description</div></td>
+                                        <td><strong>@item.TicketType.Name</strong></td>
                                         <td class="text-center"><span class="badge bg-primary">@item.Quantity</span></td>
                                         <td class="text-center">Rs. @item.UnitPrice.ToString("N0")</td>
                                         <td class="text-center"><strong>Rs. @item.TotalPrice.ToString("N0")</strong></td>

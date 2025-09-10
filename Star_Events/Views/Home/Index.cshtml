@@ -107,7 +107,7 @@
                                 <div class="event-footer d-flex justify-content-between align-items-center">
                                     @* <div>
                                         <small class="text-muted">From</small>
-                                        <strong class="text-success">Rs. @eventItem.TicketPrice.ToString("N0")</strong>
+                                        <strong class="text-success">Rs. @(eventItem.TicketTypes?.Min(tt => tt.Price) ?? 0).ToString("N0")</strong>
                                     </div> *@
                                     @if (isEventPassed)
                                     {

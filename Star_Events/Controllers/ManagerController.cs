@@ -5,43 +5,41 @@ using Microsoft.EntityFrameworkCore;
 using Star_Events.Business.Interfaces;
 using Star_Events.Data.Entities;
 using Star_Events.Data;
+using Microsoft.AspNetCore.Identity;
+using Star_Events.Models;
 using System.Security.Claims;
+
 
 namespace Star_Events.Controllers
 {
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager, Admin")]
     public class ManagerController : Controller
     {
         private readonly IEventService _eventService;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ManagerController(IEventService eventService, ApplicationDbContext context, IWebHostEnvironment env)
+        public ManagerController(IEventService eventService, ApplicationDbContext context, IWebHostEnvironment env, UserManager<ApplicationUser> userManager)
         {
             _eventService = eventService;
             _context = context;
             _env = env;
+            _userManager = userManager;
         }
 
 
         // GET: Manager/MyEvents
         public async Task<IActionResult> MyEvents()
         {
-            var managerId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
-            
-            // Debug: Log the manager ID to help troubleshoot
-            System.Diagnostics.Debug.WriteLine($"Manager ID: {managerId}");
-            
-            var events = await _context.Events
-                .Where(e => e.ManagerId == managerId)
-                .Include(e => e.Venue)
-                .OrderByDescending(e => e.Date)
-                .ToListAsync();
 
-            // Debug: Log the count of events found
-            System.Diagnostics.Debug.WriteLine($"Events found for manager: {events.Count}");
+            var managerId = _userManager.GetUserId(User);
+            Console.WriteLine(managerId);
+            if (managerId == null) return Unauthorized();
 
-            return View(events);
+            var events = await _eventService.GetAllEventsAsync();
+            var myEvents = events.Where(e => e.ManagerId == managerId).ToList(); // Filter events by current manager
+            return View(myEvents);
         }
 
         // GET: Manager/Details/{id}
@@ -70,6 +68,8 @@ namespace Star_Events.Controllers
         {
             if (ModelState.IsValid)
             {
+                var managerId = _userManager.GetUserId(User); // Get current manager's user ID
+                if (managerId == null) return Unauthorized(); // Ensure the user is logged in
                 var ev = new Event
                 {
                     Id = Guid.NewGuid(),
@@ -80,7 +80,10 @@ namespace Star_Events.Controllers
                     Location = model.Location,
                     Description = model.Description,
                     VenueId = model.VenueId,
+
+
                     ManagerId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty
+
                 };
                 ev.PosterUrl = await SavePoster(poster);
                 await _eventService.CreateEventAsync(ev);
@@ -197,7 +200,7 @@ namespace Star_Events.Controllers
         public async Task<IActionResult> TicketSales(Guid eventId)
         {
             var managerId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
-            
+
             // Get event details - ensure it belongs to current manager
             var eventDetails = await _context.Events
                 .Include(e => e.Venue)

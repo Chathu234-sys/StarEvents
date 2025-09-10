@@ -25,10 +25,6 @@
         <textarea asp-for="Description" class="form-control"></textarea>
     </div>
     <div class="form-group">
-        <label asp-for="TicketPrice"></label>
-        <input asp-for="TicketPrice" class="form-control" />
-    </div>
-    <div class="form-group">
         <label>Change Poster</label>
         <input type="file" name="poster" class="form-control" />
         @if (!string.IsNullOrEmpty(Model.PosterUrl))

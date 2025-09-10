@@ -26,8 +26,6 @@ namespace Star_Events.Data.Entities
 
         public string Description { get; set; } = string.Empty;
 
-        [Range(0, 999999)]
-        public decimal TicketPrice { get; set; }
 
         public string? PosterUrl { get; set; }
 
