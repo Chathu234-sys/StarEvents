@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Star_Events.Business.Interfaces;
 using Star_Events.Data;
 using Star_Events.Data.Entities;
+using Star_Events.Models;
+using Star_Events.Models.ViewModels;
 using Star_Events.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,12 +20,14 @@ namespace Star_Events.Controllers
     [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly IUserBusiness _business;
-        public UsersController(ApplicationDbContext context , IUserBusiness business)
+        public UsersController(ApplicationDbContext context , IUserBusiness business, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _business = business;
+            _userManager = userManager;
         }
 
         // GET: Users
@@ -185,6 +191,77 @@ namespace Star_Events.Controllers
         private bool UserModelExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+
+        // GET: Users/EditProfile
+        public async Task<IActionResult> EditProfileAdmin()
+        {
+            
+            var userId = _userManager.GetUserId(User); // Get the current user's ID
+            if (userId == null) return NotFound();
+            var user = await _userManager.FindByIdAsync(userId); // Find the user by ID
+            if (user == null) return NotFound();
+            //var userModel = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+            var model = new AdminProfileViewModel
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ContactNumber = user.ContactNumber,
+            };
+            return View(model);
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditProfileAdmin(AdminProfileViewModel admin)
+        {
+            var userId = _userManager.GetUserId(User); // Get the current user's ID
+            if (userId == null) return NotFound();
+            var user = await _userManager.FindByIdAsync(userId); // Find the user by ID
+            var userModel = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email); // Find the user by email
+            if (userModel == null && user == null) return NotFound();
+
+            try
+            {
+                //update aspnetuser table
+                user.FirstName = admin.FirstName;
+                user.LastName = admin.LastName;
+                user.UserName = admin.UserName;
+                user.Email = admin.Email;
+                user.ContactNumber = admin.ContactNumber;
+
+                //update custom user table
+                userModel.FirstName = admin.FirstName;
+                userModel.LastName = admin.LastName;
+                userModel.Email = admin.Email;
+                userModel.ContactNumber = admin.ContactNumber;
+
+                admin.ModifiedAt = DateTime.Now;
+                var result = _userManager.UpdateAsync(user);
+
+                if(result.Result.Succeeded)
+                {
+                    _context.Update(userModel);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    foreach (var error in result.Result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View(admin);
+                }
+
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                Console.WriteLine($"Error while updating details! {ex.Message}");
+                throw;
+            }
         }
     }
 }
