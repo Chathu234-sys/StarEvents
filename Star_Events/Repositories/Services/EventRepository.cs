@@ -72,7 +72,7 @@ namespace Star_Events.Repositories.Services
         public async Task<decimal> GetTotalRevenueAsync(Guid eventId)
         {
             return await _context.TicketSales
-                .Where(s => s.TicketType.EventId == eventId)
+                .Where(s => s.EventId == eventId)
                 .SumAsync(s => (decimal?)s.TotalAmount) ?? 0m;
         }
     }

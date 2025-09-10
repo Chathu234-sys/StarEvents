@@ -1,0 +1,243 @@
+@using Star_Events.Data.Entities
+@{
+    ViewData["Title"] = "Book Tickets";
+    var evt = ViewBag.Event as Event;
+    var ticketTypes = ViewBag.TicketTypes as IEnumerable<TicketType> ?? Enumerable.Empty<TicketType>();
+}
+
+<div class="container py-5" style="background-color:#0b0e14;min-height:100vh;">
+    <div class="row">
+        <!-- Left: Booking Form -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow" style="background:#111827;color:#e5e7eb;">
+                <div class="card-body p-4">
+                    <h2 class="fw-bold mb-4">
+                        <i class="fas fa-ticket-alt me-2 text-primary"></i>Book Tickets
+                    </h2>
+
+                    @if (evt != null)
+                    {
+                        <div class="row mb-4 align-items-center">
+                            <div class="col-md-4">
+                                @if (!string.IsNullOrEmpty(evt.PosterUrl))
+                                {
+                                    <img src="@evt.PosterUrl" class="img-fluid rounded" alt="@evt.Name" />
+                                }
+                                else
+                                {
+                                    <div class="bg-gradient rounded d-flex align-items-center justify-content-center" style="height: 200px; background: linear-gradient(135deg,#3b82f6,#1d4ed8);">
+                                        <i class="fas fa-calendar-alt fa-3x text-white opacity-75"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-8">
+                                <h4 class="fw-bold">@evt.Name</h4>
+                                <p class="text-muted">@evt.Description</p>
+                                <div class="row">
+                                    <div class="col-6 small text-muted">
+                                        📅 Date<br /><strong>@evt.Date.ToString("MMM dd, yyyy")</strong>
+                                    </div>
+                                    <div class="col-6 small text-muted">
+                                        ⏰ Time<br /><strong>@evt.Time</strong>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6 small text-muted">
+                                        🏷️ Category<br /><strong>@evt.Category</strong>
+                                    </div>
+                                    <div class="col-6 small text-muted">
+                                        📍 Location<br /><strong>@evt.Location</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <form asp-action="Create" method="post">
+                        <input type="hidden" name="eventId" value="@evt?.Id" />
+                        <h5 class="fw-bold mb-3">Select Tickets</h5>
+
+                        @if (ticketTypes != null && ticketTypes.Any())
+                        {
+                            <div class="row">
+                                @foreach (var tt in ticketTypes)
+                                {
+                                    <div class="col-md-4 mb-4">
+                                        <div class="ticket-card p-3 rounded-4 h-100" data-tt-id="@tt.Id">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <div>
+                                                    <label class="fw-bold d-block">@tt.Name</label>
+                                                    <p class="small text-muted mb-1">@tt.Description</p>
+                                                </div>
+                                                <span class="badge bg-success">Available: @tt.TotalAvailable</span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <span class="text-success fw-bold">Rs. @tt.Price.ToString("N0")</span>
+                                            </div>
+                                            <div class="d-flex justify-content-center">
+                                                <div class="qty-stepper">
+                                                    <input type="number" name="ticketQuantities[@tt.Id]" id="quantity-@tt.Id" value="0" min="0" max="@tt.TotalAvailable" class="qty-input text-center" onchange="updateTotal()">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                <span class="me-2">⚠️</span>
+                                No tickets available for this event.
+                            </div>
+                        }
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg" id="bookButton" disabled>
+                                <i class="fas fa-ticket-alt me-2"></i>Book Tickets
+                            </button>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Back</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Booking Summary -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow sticky-top" style="top:20px;background:#111827;color:#e5e7eb;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-calculator me-2 text-primary"></i>Booking Summary
+                    </h5>
+                    <div id="bookingSummary">
+                        <div class="text-center text-muted">
+                            <i class="fas fa-ticket-alt fa-2x mb-2"></i>
+                            <p>Select tickets to see summary</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                       
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Booking Information:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>All prices include taxes</li>
+                            <li>Tickets are non-refundable</li>
+                            <li>Please arrive 30 minutes early</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function incrementQuantity(id, max){
+            const input = document.getElementById(`quantity-${id}`);
+            let v = parseInt(input.value||'0');
+            if(v < max){ v++; }
+            input.value = v; updateTotal();
+        }
+        function decrementQuantity(id){
+            const input = document.getElementById(`quantity-${id}`);
+            let v = parseInt(input.value||'0');
+            v = Math.max(0, v-1);
+            input.value = v; updateTotal();
+        }
+        function updateTotal(){
+            let qty = 0, amount = 0;
+            const inputs = document.querySelectorAll('input[name^="ticketQuantities"]');
+            inputs.forEach(i => {
+                const q = parseInt(i.value||'0');
+                if(q>0){
+                    qty += q;
+                    const priceText = i.closest('.ticket-card').querySelector('.text-success').textContent;
+                    const price = parseInt(priceText.replace(/[^\d]/g,''))||0;
+                    amount += q*price;
+                }
+            });
+            const summary = document.getElementById('bookingSummary');
+            const btn = document.getElementById('bookButton');
+            if(qty>0){
+                summary.innerHTML = `<div class="d-flex justify-content-between mb-2"><span>Total Tickets:</span><strong>${qty}</strong></div>
+                <div class="d-flex justify-content-between mb-2"><span>Total Amount:</span><strong class="text-success">Rs. ${amount.toLocaleString()}</strong></div>
+                <hr/><div class="d-flex justify-content-between"><span>Final Total:</span><strong class="h5 text-primary mb-0">Rs. ${amount.toLocaleString()}</strong></div>`;
+                btn.disabled = false;
+            } else {
+                summary.innerHTML = `<div class="text-center text-muted"><i class="fas fa-ticket-alt fa-2x mb-2"></i><p>Select tickets to see summary</p></div>`;
+                btn.disabled = true;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateTotal);
+    </script>
+}
+
+<style>
+    .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    .card {
+        border-radius: 15px;
+    }
+
+    .ticket-card {
+        background: #0f1623;
+        border: 1px solid rgba(255,255,255,0.06);
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .ticket-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+    }
+
+    .input-group .form-control {
+        border-left: 0;
+        border-right: 0;
+        max-width: 80px;
+    }
+
+    .input-group .btn {
+        border-radius: 0;
+    }
+
+        .input-group .btn:first-child {
+            border-top-left-radius: 0.375rem;
+            border-bottom-left-radius: 0.375rem;
+        }
+
+        .input-group .btn:last-child {
+            border-top-right-radius: 0.375rem;
+            border-bottom-right-radius: 0.375rem;
+        }
+
+    .qty-stepper {
+        display: inline-block;
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+    .qty-stepper .qty-input {
+        width: 80px;
+        background: #0f1623;
+        color: #e5e7eb;
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 0;
+        padding: 6px 8px;
+    }
+</style>

@@ -2,26 +2,50 @@
 
 @{
     ViewData["Title"] = "Ticket Sales Dashboard";
-    var salesData = Model
-        .GroupBy(s => s.TicketType.Name)
-        .Select(g => new
+    var eventDetails = ViewBag.EventDetails as Star_Events.Data.Entities.Event;
+    var grouped = (IEnumerable<Star_Events.Models.ViewModels.TicketTypeSalesViewModel>)ViewBag.SalesGrouped ??
+        Model.GroupBy(s => s.TicketType.Name).Select(g => new Star_Events.Models.ViewModels.TicketTypeSalesViewModel
         {
-            TicketType = g.Key,
+            TicketTypeName = g.Key,
             Quantity = g.Sum(x => x.Quantity),
             Amount = g.Sum(x => x.TotalAmount)
-        })
-        .ToList();
+        }).ToList();
 
-    var labels = string.Join(",", salesData.Select(s => $"'{s.TicketType}'"));
-    var quantities = string.Join(",", salesData.Select(s => s.Quantity));
-    var revenues = string.Join(",", salesData.Select(s => s.Amount));
+    var labels = string.Join(",", grouped.Select(s => $"'{s.TicketTypeName}'"));
+    var quantities = string.Join(",", grouped.Select(s => s.Quantity));
+    var revenues = string.Join(",", grouped.Select(s => s.Amount));
 }
 
 <div class="container mt-5">
+    <!-- Event Header -->
+    @if (eventDetails != null)
+    {
+        <div class="card bg-dark text-light mb-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold mb-2">@eventDetails.Name</h2>
+                        <p class="text-muted mb-1">@eventDetails.Description</p>
+                        <div class="d-flex gap-3 small text-muted">
+                            <span><i class="bi bi-calendar me-1"></i>@eventDetails.Date.ToString("MMM dd, yyyy")</span>
+                            <span><i class="bi bi-clock me-1"></i>@eventDetails.Time.ToString(@"hh\:mm")</span>
+                            <span><i class="bi bi-geo-alt me-1"></i>@eventDetails.Location</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="h4 text-success mb-0">Rs. @ViewBag.TotalRevenue.ToString("N0")</div>
+                        <div class="small text-muted">Total Revenue</div>
+                        <div class="small text-muted">@ViewBag.TotalTicketsSold tickets sold</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
     <!-- Page Title -->
-    <h2 class="fw-bold text-white mb-4">
-        <i class="bi bi-graph-up-arrow text-success me-2"></i> Ticket Sales Dashboard
-    </h2>
+    <h3 class="fw-bold text-white mb-4">
+        <i class="bi bi-graph-up-arrow text-success me-2"></i> Sales Analytics
+    </h3>
 
     <!-- Chart Section -->
     <div class="row mb-5">
@@ -41,7 +65,25 @@
 
     <!-- Sales Table -->
     <div class="card shadow-lg border-0 rounded-4 p-4 bg-dark text-light mb-4">
-        <h4 class="fw-bold mb-3">Detailed Ticket Sales</h4>
+        <h4 class="fw-bold mb-3">Ticket Sales Summary (All Types)</h4>
+        <div class="row row-cols-1 row-cols-md-3 g-3 mb-3">
+            @foreach (var g in grouped)
+            {
+                <div class="col">
+                    <div class="card bg-dark text-light p-3 h-100">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="fw-bold">@g.TicketTypeName</div>
+                            <div class="text-success fw-bold">Rs. @g.Amount.ToString("N0")</div>
+                        </div>
+                        <div class="small text-muted">@g.Quantity tickets sold</div>
+                        @if (g.Quantity == 0)
+                        {
+                            <div class="small text-warning">No sales yet</div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
         <table class="table table-dark table-striped table-hover align-middle">
             <thead>
                 <tr>
@@ -63,8 +105,22 @@
                 }
             </tbody>
         </table>
-        <div class="alert alert-info mt-3">
-            <strong>Total Revenue: </strong> @ViewBag.TotalRevenue.ToString("C")
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <div class="alert alert-success">
+                    <strong>Total Revenue: </strong> Rs. @ViewBag.TotalRevenue.ToString("N0")
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="alert alert-info">
+                    <strong>Total Tickets Sold: </strong> @ViewBag.TotalTicketsSold
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="alert alert-warning">
+                    <strong>Total Sales: </strong> @ViewBag.TotalSalesCount transactions
+                </div>
+            </div>
         </div>
     </div>
 

@@ -70,11 +70,6 @@ namespace Star_Events.Controllers
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var userModel = await _business.GetUserById(id);
             if (userModel == null)
             {
@@ -108,11 +103,6 @@ namespace Star_Events.Controllers
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var userModel = await _business.GetUserById(id);
             if (userModel == null)
             {
@@ -158,11 +148,6 @@ namespace Star_Events.Controllers
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var userModel = await _business.GetUserById(id);
             if (userModel == null)
             {
