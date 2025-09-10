@@ -1,10 +1,18 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Star_Events</title>
+    <title>@ViewData["Title"] - Star Events</title>
+
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
@@ -13,7 +21,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm ">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#"><img src="~/images/logo2.png" style="width:60px; height:60px;" /></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,13 +29,34 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarColor01">
                     <ul class="navbar-nav me-auto" style="font-size:large;">
+                <!-- Brand -->
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i></i> Star Events
+                </a>
+
+                <!-- Mobile Toggle -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                        aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Links -->
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            <span class="visually-hidden">(current)</span>
+                            <a class="nav-link @(ViewData["Title"]?.ToString() == "Home" ? "active" : "")"
+                               asp-area="" asp-controller="Home" asp-action="Index">
+                                Home
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link @(ViewData["Title"]?.ToString() == "Privacy" ? "active" : "")"
+                               asp-area="" asp-controller="Home" asp-action="Privacy">
+                                Privacy
+                            </a>
                         </li>
+
+                        @* Manager Links *@
                         @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Manager"))
                         {
                             <li class="nav-item">
@@ -37,39 +66,63 @@
                                 <a class="nav-link" asp-area="" asp-controller="Venues" asp-action="Index">Venues</a>
                             </li>
                         }
-                        
-                        @* <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Separated link</a>
-                            </div>
-                        </li> *@
+
+                        @* Customer Links *@
+                        @if (!(User?.Identity?.IsAuthenticated == true && User.IsInRole("Manager")))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Events" asp-action="Index">Events</a>
+                            </li>
+                            @if (User?.Identity?.IsAuthenticated == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Bookings" asp-action="Index">My Bookings</a>
+                                </li>
+                            }
+                        }
                     </ul>
-                    @* <form class="d-flex">
-                        <input class="form-control me-sm-2" type="search" placeholder="Search">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-                    </form> *@
-                    <partial name="_LoginPartial"/>
+
+                    <!-- Right Side: Login/Logout -->
+                    <div class="d-flex">
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
             </div>
         </nav>
+
     </header>
-    <div class="container">
+
+    <!-- Main Content -->
+    <div class="container my-4">
         <main role="main" class="pb-3">
-            <br />
             @RenderBody()
         </main>
     </div>
-
-   @*  <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Star_Events - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    @* <footer class="footer bg-dark text-light fixed-bottom shadow-lg">
+        <div class="container text-center py-2">
+            <p class="mb-0 text-white-50 small">
+                &copy; @DateTime.Now.Year <strong>StarEvents Pvt Ltd</strong>. All rights reserved.
+            </p>
         </div>
     </footer> *@
+    <style>
+        .footer-link {
+            color: #adb5bd; /* soft grey */
+            text-decoration: none;
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+        }
+
+            .footer-link:hover {
+                color: #ffffff; /* white on hover */
+                text-decoration: underline;
+            }
+
+        .footer p {
+            font-size: 0.7rem;
+        }
+    </style>
+
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

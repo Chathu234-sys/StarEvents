@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +7,8 @@ using Star_Events.Data.Entities;
 using Star_Events.Data;
 using Microsoft.AspNetCore.Identity;
 using Star_Events.Models;
+using System.Security.Claims;
+
 
 namespace Star_Events.Controllers
 {
@@ -26,9 +28,11 @@ namespace Star_Events.Controllers
             _userManager = userManager;
         }
 
+
         // GET: Manager/MyEvents
         public async Task<IActionResult> MyEvents()
         {
+
             var managerId = _userManager.GetUserId(User);
             Console.WriteLine(managerId);
             if (managerId == null) return Unauthorized();
@@ -76,7 +80,9 @@ namespace Star_Events.Controllers
                     Location = model.Location,
                     Description = model.Description,
                     VenueId = model.VenueId,
-                    ManagerId = managerId
+
+
+                    ManagerId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty
 
                 };
                 ev.PosterUrl = await SavePoster(poster);
@@ -117,6 +123,12 @@ namespace Star_Events.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Preserve ManagerId (not posted by the form)
+                var existing = await _context.Events.AsNoTracking().FirstOrDefaultAsync(e => e.Id == ev.Id);
+                if (existing != null)
+                {
+                    ev.ManagerId = existing.ManagerId;
+                }
                 if (poster != null)
                 {
                     ev.PosterUrl = await SavePoster(poster);
@@ -187,12 +199,46 @@ namespace Star_Events.Controllers
         // Sales Report
         public async Task<IActionResult> TicketSales(Guid eventId)
         {
-            var sales = await _context.TicketSales
-                .Where(s => s.TicketType.EventId == eventId)
-                .Include(s => s.TicketType)
+            var managerId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            // Get event details - ensure it belongs to current manager
+            var eventDetails = await _context.Events
+                .Include(e => e.Venue)
+                .FirstOrDefaultAsync(e => e.Id == eventId && e.ManagerId == managerId);
+
+            if (eventDetails == null)
+            {
+                return NotFound();
+            }
+
+            // Get all ticket types for this event
+            var eventTicketTypes = await _context.TicketTypes
+                .Where(t => t.EventId == eventId)
                 .ToListAsync();
 
+            // Get all sales for this event
+            var sales = await _context.TicketSales
+                .Where(s => s.EventId == eventId)
+                .Include(s => s.TicketType)
+                .OrderByDescending(s => s.SaleDate)
+                .ToListAsync();
+
+            // Create grouped data including ticket types with zero sales
+            var grouped = eventTicketTypes
+                .Select(tt => new Star_Events.Models.ViewModels.TicketTypeSalesViewModel
+                {
+                    TicketTypeName = tt.Name,
+                    Quantity = sales.Where(s => s.TicketTypeId == tt.Id).Sum(x => x.Quantity),
+                    Amount = sales.Where(s => s.TicketTypeId == tt.Id).Sum(x => x.TotalAmount)
+                })
+                .OrderBy(x => x.TicketTypeName)
+                .ToList();
+
+            ViewBag.EventDetails = eventDetails;
             ViewBag.TotalRevenue = await _eventService.GetTotalRevenueAsync(eventId);
+            ViewBag.SalesGrouped = grouped; // for charts / summary
+            ViewBag.TotalTicketsSold = sales.Sum(s => s.Quantity);
+            ViewBag.TotalSalesCount = sales.Count;
             return View(sales);
         }
     }
