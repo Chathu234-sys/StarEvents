@@ -10,7 +10,6 @@ namespace Star_Events.Data.Entities
         [Required]
         public string Name { get; set; } = string.Empty; // e.g., VIP, Regular, Student
 
-        public string Description { get; set; } = string.Empty;
 
         [Range(0, 999999)]
         public decimal Price { get; set; }

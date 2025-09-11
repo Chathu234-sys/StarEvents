@@ -12,8 +12,8 @@ using Star_Events.Data;
 namespace Star_Events.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250910100156_init")]
-    partial class init
+    [Migration("20250910052121_RemoveUnusedColumns")]
+    partial class RemoveUnusedColumns
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -182,25 +182,12 @@ namespace Star_Events.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("DiscountAmount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<Guid>("EventId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ExpiresAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("FinalAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("LoyaltyPointsUsed")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PromoCode")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -280,22 +267,13 @@ namespace Star_Events.Migrations
                     b.Property<string>("PosterUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("TicketPrice")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<TimeSpan>("Time")
                         .HasColumnType("time");
-
-                    b.Property<int?>("UsersId")
-                        .HasColumnType("int");
 
                     b.Property<Guid?>("VenueId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UsersId");
 
                     b.HasIndex("VenueId");
 
@@ -347,10 +325,6 @@ namespace Star_Events.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("EventId")
                         .HasColumnType("uniqueidentifier");
@@ -618,15 +592,9 @@ namespace Star_Events.Migrations
 
             modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
                 {
-                    b.HasOne("Star_Events.Data.Entities.UserModel", "Users")
-                        .WithMany()
-                        .HasForeignKey("UsersId");
-
                     b.HasOne("Star_Events.Data.Entities.Venue", "Venue")
                         .WithMany("Events")
                         .HasForeignKey("VenueId");
-
-                    b.Navigation("Users");
 
                     b.Navigation("Venue");
                 });
