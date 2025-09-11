@@ -64,7 +64,7 @@
                         @if (!(User?.Identity?.IsAuthenticated == true && User.IsInRole("Manager")))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Events" asp-action="Index">Events</a>
+                                <a class="nav-link" asp-area="" asp-controller="Customer" asp-action="Events">Events</a>
                             </li>
                             @if (User?.Identity?.IsAuthenticated == true)
                             {

@@ -1,0 +1,209 @@
+@model IEnumerable<Star_Events.Data.Entities.Event>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<style>
+    .table-hover.text-white {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+        .table-hover.text-white thead th {
+            background-color: #2c3e50;
+            padding: 12px 10px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .table-hover.text-white tbody td {
+            padding: 12px 10px;
+            vertical-align: top;
+            word-wrap: break-word;
+        }
+
+        /* Column width adjustments */
+        .table-hover.text-white thead th:nth-child(1) { /* Name */
+            width: 15%;
+        }
+
+        .table-hover.text-white thead th:nth-child(2) { /* Date */
+            width: 8%;
+        }
+
+        .table-hover.text-white thead th:nth-child(3) { /* Time */
+            width: 8%;
+        }
+
+        .table-hover.text-white thead th:nth-child(4) { /* Category */
+            width: 10%;
+        }
+
+        .table-hover.text-white thead th:nth-child(5) { /* Location */
+            width: 10%;
+        }
+
+        .table-hover.text-white thead th:nth-child(6) { /* Description */
+            width: 25%;
+        }
+
+        .table-hover.text-white thead th:nth-child(7) { /* PosterUrl */
+            width: 12%;
+        }
+
+        .table-hover.text-white thead th:nth-child(8) { /* Venue */
+            width: 12%;
+        }
+
+        /* Action buttons column */
+        .table-hover.text-white thead th:last-child,
+        .table-hover.text-white tbody td:last-child {
+            width: 220px;
+            text-align: center;
+        }
+
+        /* Button styling */
+        .table-hover.text-white .btn {
+            margin: 2px 0;
+            padding: 6px 10px;
+            font-size: 13px;
+            white-space: nowrap;
+            display: inline-block;
+            width: 90px;
+            text-align: center;
+        }
+</style>
+
+<div class="container" style="display:flex; justify-content:center; align-items:center; height:10vh; border: 2px solid blue; padding:20px; border-radius:15px;">
+    <ul class="nav nav-pills">
+        <li class="nav-item">
+            <a class="nav-link" href="#">Personal Info</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Users</a>
+            <div class="dropdown-menu" style="">
+                <a class="dropdown-item" asp-controller="Users" asp-action="Index">Customers</a>
+                <a class="dropdown-item" asp-controller="Users" asp-action="ManagerIndex">Event Managers</a>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Events</a>
+            <div class="dropdown-menu" style="">
+                <a class="dropdown-item active" asp-controller="Events" asp-action="Index">All</a>
+                <a class="dropdown-item" asp-controller="Events" asp-action="OngoingEvents">Ongoing</a>
+                <a class="dropdown-item" asp-controller="Events" asp-action="OutdatedEvents">Outdated</a>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Venues" asp-action="Index">Venues</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Reports</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-white">Event List</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Manager" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i>&nbsp; Create New Event
+            </a>
+        </div>
+    </div>
+</div>
+
+<table class="table table-hover text-white">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Time)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            @* <th>
+                @Html.DisplayNameFor(model => model.TicketPrice)
+            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.PosterUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Venue)
+            </th>
+            @* <th>
+                @Html.DisplayNameFor(model => model.ManagerId)
+            </th> *@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr class="table-dark">
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Time)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            @* <td>
+                @Html.DisplayFor(modelItem => item.TicketPrice)
+            </td> *@
+            <td>
+                    @if (!string.IsNullOrEmpty(item.PosterUrl))
+                    {
+                        <img src="@item.PosterUrl" alt="User Image" style="width:100px; height:100px; object-fit:cover; border-radius:10%;" />
+                    }
+                    else
+                    {
+                        <span>No Image</span>
+                    }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Venue.Name)
+            </td>
+            @* <td>
+                @Html.DisplayFor(modelItem => item.ManagerId)
+            </td> *@
+            <td>
+                    <a asp-controller="Manager" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success"><i class="bi bi-pencil-fill"></i>&nbsp; Edit</a> |
+                    <a asp-controller="Manager" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary"><i class="bi bi-ticket-detailed"></i>&nbsp; Details</a> |
+                    <a asp-controller="Manager" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="bi bi-trash"></i>&nbsp; Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
