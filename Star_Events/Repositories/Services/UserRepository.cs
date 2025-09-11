@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Star_Events.Data;
 using Star_Events.Data.Entities;
+using Star_Events.Models.ViewModels;
 using Star_Events.Repositories.Interfaces;
 
 namespace Star_Events.Repositories.Services

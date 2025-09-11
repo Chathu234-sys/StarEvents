@@ -12,8 +12,8 @@ using Star_Events.Data;
 namespace Star_Events.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250907171834_AddStatusToTicketSale")]
-    partial class AddStatusToTicketSale
+    [Migration("20250910100156_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -162,6 +162,92 @@ namespace Star_Events.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Star_Events.Data.Entities.Booking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("BookingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("BookingNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("FinalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("LoyaltyPointsUsed")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PromoCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Bookings");
+                });
+
+            modelBuilder.Entity("Star_Events.Data.Entities.BookingItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TicketTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId");
+
+                    b.HasIndex("TicketTypeId");
+
+                    b.ToTable("BookingItems");
+                });
+
             modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
                 {
                     b.Property<Guid>("Id")
@@ -201,10 +287,15 @@ namespace Star_Events.Migrations
                     b.Property<TimeSpan>("Time")
                         .HasColumnType("time");
 
+                    b.Property<int?>("UsersId")
+                        .HasColumnType("int");
+
                     b.Property<Guid?>("VenueId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UsersId");
 
                     b.HasIndex("VenueId");
 
@@ -495,11 +586,47 @@ namespace Star_Events.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Star_Events.Data.Entities.Booking", b =>
+                {
+                    b.HasOne("Star_Events.Data.Entities.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("Star_Events.Data.Entities.BookingItem", b =>
+                {
+                    b.HasOne("Star_Events.Data.Entities.Booking", "Booking")
+                        .WithMany("BookingItems")
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Star_Events.Data.Entities.TicketType", "TicketType")
+                        .WithMany()
+                        .HasForeignKey("TicketTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("TicketType");
+                });
+
             modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
                 {
+                    b.HasOne("Star_Events.Data.Entities.UserModel", "Users")
+                        .WithMany()
+                        .HasForeignKey("UsersId");
+
                     b.HasOne("Star_Events.Data.Entities.Venue", "Venue")
                         .WithMany("Events")
                         .HasForeignKey("VenueId");
+
+                    b.Navigation("Users");
 
                     b.Navigation("Venue");
                 });
@@ -528,6 +655,11 @@ namespace Star_Events.Migrations
                         .IsRequired();
 
                     b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("Star_Events.Data.Entities.Booking", b =>
+                {
+                    b.Navigation("BookingItems");
                 });
 
             modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>

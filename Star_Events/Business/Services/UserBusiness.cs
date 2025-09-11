@@ -1,15 +1,20 @@
-﻿using Star_Events.Business.Interfaces;
+﻿using Microsoft.AspNetCore.Identity;
+using Star_Events.Business.Interfaces;
 using Star_Events.Data.Entities;
+using Star_Events.Models;
+using Star_Events.Models.ViewModels;
 using Star_Events.Repositories.Interfaces;
 
 namespace Star_Events.Business.Services
 {
     public class UserBusiness : IUserBusiness
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserRepository _userRepository;
-        public UserBusiness(IUserRepository userRepository)
+        public UserBusiness(IUserRepository userRepository, UserManager<ApplicationUser> userManager)
         {
             _userRepository = userRepository;
+            _userManager = userManager;
         }
 
         public Task AddUsers(UserModel user)

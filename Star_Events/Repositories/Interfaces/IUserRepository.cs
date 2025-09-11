@@ -1,4 +1,5 @@
 ﻿using Star_Events.Data.Entities;
+using Star_Events.Models.ViewModels;
 
 namespace Star_Events.Repositories.Interfaces
 {

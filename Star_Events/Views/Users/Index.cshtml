@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<Star_Events.Data.Entities.UserModel>
 
-@{
+@* @{
     ViewData["Title"] = "Index";
-}
+} *@
 
 <style>
     .table-hover.text-white thead th {
@@ -20,7 +20,7 @@
 <div class="container" style="display:flex; justify-content:center; align-items:center; height:10vh; border: 2px solid blue; padding:20px; border-radius:15px;">
     <ul class="nav nav-pills">
         <li class="nav-item">
-            <a class="nav-link" href="#">Personal Info</a>
+            <a class="nav-link" asp-controller="Users" asp-action="EditProfileAdmin">Personal Info</a>
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Users</a>
