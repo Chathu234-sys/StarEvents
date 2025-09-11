@@ -3,24 +3,21 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Star_Events.Data;
 
 #nullable disable
 
-namespace Star_Events.Migrations
+namespace Star_Events.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250910052121_RemoveUnusedColumns")]
-    partial class RemoveUnusedColumns
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -270,10 +267,15 @@ namespace Star_Events.Migrations
                     b.Property<TimeSpan>("Time")
                         .HasColumnType("time");
 
+                    b.Property<int?>("UsersId")
+                        .HasColumnType("int");
+
                     b.Property<Guid?>("VenueId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UsersId");
 
                     b.HasIndex("VenueId");
 
@@ -592,9 +594,15 @@ namespace Star_Events.Migrations
 
             modelBuilder.Entity("Star_Events.Data.Entities.Event", b =>
                 {
+                    b.HasOne("Star_Events.Data.Entities.UserModel", "Users")
+                        .WithMany()
+                        .HasForeignKey("UsersId");
+
                     b.HasOne("Star_Events.Data.Entities.Venue", "Venue")
                         .WithMany("Events")
                         .HasForeignKey("VenueId");
+
+                    b.Navigation("Users");
 
                     b.Navigation("Venue");
                 });
