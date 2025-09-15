@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booking Created</title>
+  <style>
+    body{font-family:Arial, Helvetica, sans-serif;background:#ffffff;margin:0;padding:0;color:#1f2937}
+    .container{max-width:720px;margin:0 auto;padding:32px}
+    .card{padding:24px;border-radius:12px;background:#f3f4f6}
+    h1{font-size:24px;margin:0 0 12px}
+    .meta{margin:8px 0}
+    .badge{display:inline-block;background:#10b981;color:#fff;border-radius:6px;padding:4px 8px;font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Your booking is created</h1>
+      <p>Hi {{FirstName}}, your booking <strong>#{{BookingNo}}</strong> was created for <strong>{{EventName}}</strong>.</p>
+      <p class="meta"><strong>Date:</strong> {{EventDate}} &nbsp;&nbsp; <strong>Total:</strong> Rs. {{TotalAmount}}</p>
+      <span class="badge">Pending payment</span>
+    </div>
+  </div>
+</body>
+</html>
+
+

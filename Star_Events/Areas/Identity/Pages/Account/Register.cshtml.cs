@@ -35,6 +35,7 @@ namespace Star_Events.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly Star_Events.Business.Interfaces.IEmailService _mailKitEmail;
 
         private readonly ApplicationDbContext _context;
 
@@ -44,7 +45,8 @@ namespace Star_Events.Areas.Identity.Pages.Account
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            Star_Events.Business.Interfaces.IEmailService mailKitEmail)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -52,6 +54,7 @@ namespace Star_Events.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _mailKitEmail = mailKitEmail;
             _context = context;
         }
 
@@ -199,8 +202,27 @@ namespace Star_Events.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    // Send a single templated welcome/confirmation email (no second plain text email)
+                    try
+                    {
+                        var placeholders = new Dictionary<string,string>
+                        {
+                            {"FirstName", Input.FirstName},
+                            {"BrandName", "Star Events"},
+                            {"CtaUrl", HtmlEncoder.Default.Encode(callbackUrl)}
+                        };
+                        await _mailKitEmail.SendTemplateAsync(Input.Email, "Welcome to Star Events", "welcome", placeholders);
+                    }
+                    catch { }
+
+                    // Send welcome email (separate from Identity confirmation)
+                    try
+                    {
+                        var subject = $"Welcome to Star Events, {Input.FirstName}!";
+                        var body = $"<h2>Welcome!</h2><p>Your {Input.Role} account has been created successfully.</p>";
+                        await _mailKitEmail.SendAsync(Input.Email, subject, body);
+                    }
+                    catch { }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

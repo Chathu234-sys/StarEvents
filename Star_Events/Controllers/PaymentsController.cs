@@ -19,6 +19,7 @@ namespace Star_Events.Controllers
         private readonly IBookingService _bookingService;
         private readonly ITicketService _ticketService;
         private readonly ApplicationDbContext _context;
+        private readonly IEmailService _emailService;
         private readonly StripeSettings _stripeSettings;
 
         public PaymentsController(
@@ -26,12 +27,14 @@ namespace Star_Events.Controllers
             IBookingService bookingService,
             ITicketService ticketService,
             ApplicationDbContext context,
+            IEmailService emailService,
             IOptions<StripeSettings> stripeOptions)
         {
             _paymentService = paymentService;
             _bookingService = bookingService;
             _ticketService = ticketService;
             _context = context;
+            _emailService = emailService;
             _stripeSettings = stripeOptions.Value;
             
             // Initialize Stripe
@@ -149,6 +152,47 @@ namespace Star_Events.Controllers
             {
                 var tickets = await _ticketService.GenerateTicketsForBookingAsync(bookingId);
                 TempData["SuccessMessage"] = $"Payment completed successfully! {tickets.Count()} tickets have been generated for your booking.";
+
+                // Email tickets with QR attachments (template)
+                try
+                {
+                    var customerEmail = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+                    if (!string.IsNullOrWhiteSpace(customerEmail))
+                    {
+                        var attachParts = new List<MimeKit.MimePart>();
+                        foreach (var t in tickets)
+                        {
+                            if (!string.IsNullOrEmpty(t.QRCodeImagePath))
+                            {
+                                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", t.QRCodeImagePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                                if (System.IO.File.Exists(path))
+                                {
+                                    var bytes = await System.IO.File.ReadAllBytesAsync(path);
+                                    var part = new MimeKit.MimePart("image", "png")
+                                    {
+                                        Content = new MimeKit.MimeContent(new MemoryStream(bytes)),
+                                        ContentDisposition = new MimeKit.ContentDisposition(MimeKit.ContentDisposition.Attachment),
+                                        ContentTransferEncoding = MimeKit.ContentEncoding.Base64,
+                                        FileName = Path.GetFileName(path)
+                                    };
+                                    attachParts.Add(part);
+                                }
+                            }
+                        }
+
+                        var subject = $"Your tickets for booking #{booking.Id:D6}";
+                        var placeholders = new Dictionary<string,string>
+                        {
+                            {"FirstName", User.Identity?.Name ?? "Customer"},
+                            {"BookingNo", booking.Id.ToString("D6")},
+                            {"EventName", booking.Event?.Name ?? "Event"},
+                            {"EventDate", booking.Event?.Date.ToString("MMM dd, yyyy") ?? string.Empty},
+                            {"TotalAmount", booking.FinalAmount.ToString("N0")}
+                        };
+                        await _emailService.SendTemplateAsync(customerEmail, subject, "payment-success", placeholders, attachParts);
+                    }
+                }
+                catch { }
             }
             catch (Exception)
             {

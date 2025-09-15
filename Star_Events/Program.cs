@@ -42,8 +42,13 @@ builder.Services.AddScoped<ITicketService, TicketService>();
 // QR Code Service
 builder.Services.AddScoped<IQRCodeService, QRCodeService>();
 
+// Email Service
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
+
 // Stripe Configuration
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+// Email configuration binding is done inside EmailService via IConfiguration
 
 builder.Services.AddControllersWithViews();
 

@@ -13,11 +13,13 @@ namespace Star_Events.Controllers
     {
         private readonly IBookingService _service;
         private readonly ApplicationDbContext _db;
+        private readonly IEmailService _emailService;
 
-        public BookingsController(IBookingService service, ApplicationDbContext db)
+        public BookingsController(IBookingService service, ApplicationDbContext db, IEmailService emailService)
         {
             _service = service;
             _db = db;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -62,6 +64,29 @@ namespace Star_Events.Controllers
             }
 
             var booking = await _service.CreateAsync(customerId, eventId, clean);
+
+            // Send booking confirmation email (template)
+            try
+            {
+                var userEmail = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+                var evt = await _db.Events.FirstOrDefaultAsync(e => e.Id == eventId);
+                if (!string.IsNullOrWhiteSpace(userEmail) && evt != null)
+                {
+                    var subject = $"Your booking is created - {evt.Name}";
+                    var placeholders = new Dictionary<string,string>
+                    {
+                        {"FirstName", User.Identity?.Name ?? "Customer"},
+                        {"BookingNo", booking.Id.ToString("D6")},
+                        {"EventName", evt.Name},
+                        {"EventDate", evt.Date.ToString("MMM dd, yyyy")},
+                        {"TotalAmount", booking.FinalAmount.ToString("N0")},
+                        {"BrandName", "Star Events"}
+                    };
+                    await _emailService.SendTemplateAsync(userEmail, subject, "booking-created", placeholders);
+                }
+            }
+            catch { }
+
             TempData["SuccessMessage"] = "Booking created successfully";
             return RedirectToAction(nameof(Details), new { id = booking.Id });
         }
