@@ -5,54 +5,158 @@
     ViewData["Title"] = "Log in";
 }
 
-<h2>@ViewData["Title"]</h2>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post" class="text-black-50">
-                <h3 class="text-white-50">Use a local account to log in.</h3>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+<div class="container-fluid">
+    <div class="row justify-content-center align-items-center min-vh-100 login-bg">
+        <div class="col-md-8 col-lg-5">
+            <div class="card shadow-lg border-0 text-light glass-card">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <i class="fas fa-user-circle fa-4x text-accent"></i>
+                        </div>
+                        <h2 class="fw-bold text-light">Welcome Back</h2>
+                        <p class="text-muted">Sign in to continue</p>
+                    </div>
+
+                    <form id="account" method="post" class="text-light">
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                        <div class="form-floating mb-4">
+                            <input asp-for="Input.Email" class="form-control bg-dark text-light" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            <label asp-for="Input.Email" class="form-label text-light">Email</label>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input asp-for="Input.Password" class="form-control bg-dark text-light" autocomplete="current-password" aria-required="true" placeholder="password" />
+                            <label asp-for="Input.Password" class="form-label text-light">Password</label>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <!-- Role dropdown -->
+                        <div class="form-floating mb-4">
+                            <select asp-for="Input.Role" class="form-select bg-dark text-light border-0" asp-items="Model.Roles"></select>
+                            <label asp-for="Input.Role" class="form-label text-light">Role</label>
+                            <span asp-validation-for="Input.Role" class="text-danger"></span>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col d-flex justify-content-between align-items-center">
+                                <div class="form-check">
+                                    <input class="form-check-input" asp-for="Input.RememberMe" />
+                                    <label asp-for="Input.RememberMe" class="form-check-label text-light">
+                                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                    </label>
+                                </div>
+                                <a id="forgot-password" asp-page="./ForgotPassword" class="text-decoration-none text-accent">Forgot password?</a>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button id="login-submit" type="submit" class="btn btn-login btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Log In
+                            </button>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <p class="mb-1 text-muted">
+                                Don’t have an account?
+                                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-decoration-none text-accent fw-bold">Sign up</a>
+                            </p>
+                            <p>
+                                <a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="text-decoration-none text-accent">Resend email confirmation</a>
+                            </p>
+                            <p class="mt-3">
+                                <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-light fw-bold">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Home
+                                </a>
+                            </p>
+                        </div>
+                    </form>
                 </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <select asp-for="Input.Role" class="form-control" asp-items="Model.Roles"></select>
-                    <label asp-for="Input.Role" class="form-label">Role</label>
-                    <span asp-validation-for="Input.Role" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('.form-control, .form-select').focus(function () {
+                $(this).parent().addClass('focused');
+            }).blur(function () {
+                if (!$(this).val()) {
+                    $(this).parent().removeClass('focused');
+                }
+            });
+        });
+    </script>
 }
+
+<style>
+    /* Background gradient for full page */
+    .login-bg {
+        background: linear-gradient(135deg, #0b0e14 0%, #141822 50%, #0b0e14 100%);
+    }
+
+    /* Glassmorphism card - lighter with white tint */
+    .glass-card {
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.08); /* light overlay */
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Floating labels */
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-select:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label,
+    .form-floating > .form-select:not(:placeholder-shown) ~ label {
+        color: #7da6ff;
+    }
+
+    /* Inputs & dropdown */
+    .form-control,
+    .form-select {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background-color: rgba(0, 0, 0, 0.6) !important;
+        color: #fff !important;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #7da6ff;
+            box-shadow: 0 0 8px rgba(108, 157, 252, 0.6);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+    /* Modern login button */
+    .btn-login {
+        background: linear-gradient(135deg, #7da6ff 0%, #3b82f6 100%);
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease-in-out;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 157, 252, 0.5);
+        }
+
+    /* Accent color (links/icons) */
+    .text-accent {
+        color: #7da6ff !important;
+    }
+
+        .text-accent:hover {
+            color: #3b82f6 !important;
+        }
+</style>

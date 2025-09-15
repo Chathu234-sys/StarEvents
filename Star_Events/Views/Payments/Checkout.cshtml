@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Payment Checkout";
+}
+
+<div class="container py-5" style="background-color:#0b0e14;min-height:100vh;">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow" style="background:#111827;color:#d1d5db;">
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <i class="fab fa-stripe fa-4x text-primary mb-3"></i>
+                        <h2 class="fw-bold">Redirecting to Stripe</h2>
+                        <p class="text-muted">You will be redirected to Stripe's secure payment page.</p>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Secure Payment:</strong> Your payment information is processed securely by Stripe.
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Please wait while we redirect you...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // This page is only shown briefly before redirect to Stripe
+    // The actual redirect happens in the controller
+</script>

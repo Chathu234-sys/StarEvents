@@ -80,9 +80,33 @@
                     </div>
 
                     <div class="d-grid gap-2 mt-4">
-                        <a asp-action="Index" class="btn btn-primary btn-lg"><i class="fas fa-list me-2"></i>My Bookings</a>
-                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Home</a>
+                        <a asp-controller="Bookings" asp-action="MyBookings" class="btn btn-primary btn-lg">
+                            <i class="fas fa-list me-2"></i>View All My Bookings
+                        </a>
+                        <a asp-controller="Events" asp-action="Index" class="btn btn-outline-primary">
+                            <i class="fas fa-calendar-alt me-2"></i>Browse More Events
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>Go to Homepage
+                        </a>
+
+                        @if (Model.Status == Star_Events.Data.Entities.BookingStatus.Pending && Model.TotalAmount > 0)
+                        {
+                            <!-- Show Pay with Stripe if payment pending -->
+                            <a asp-controller="Payments" asp-action="Checkout" asp-route-bookingId="@Model.Id" class="btn btn-success btn-lg">
+                                <i class="fab fa-stripe me-2"></i>Pay with Stripe
+                            </a>
+                        }
+                        else if (Model.Status == Star_Events.Data.Entities.BookingStatus.Confirmed)
+                        {
+                            <!-- Show View Tickets if payment confirmed -->
+                            <a asp-controller="Tickets" asp-action="BookingTickets" asp-route-bookingId="@Model.Id" class="btn btn-success btn-lg">
+                                <i class="fas fa-ticket-alt me-2"></i>View Tickets
+                            </a>
+                        }
                     </div>
+
+
                 </div>
             </div>
         </div>

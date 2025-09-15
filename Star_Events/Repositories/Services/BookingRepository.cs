@@ -39,6 +39,13 @@ namespace Star_Events.Repositories.Services
             await _db.Bookings.AddAsync(booking);
         }
 
+        public async Task<Booking> UpdateAsync(Booking booking)
+        {
+            _db.Bookings.Update(booking);
+            await _db.SaveChangesAsync();
+            return booking;
+        }
+
         public Task SaveAsync()
         {
             return _db.SaveChangesAsync();

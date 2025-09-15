@@ -12,6 +12,11 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- Custom Styles -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
@@ -21,38 +26,34 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm ">
+        <nav class="navbar navbar-expand-lg navbar-dark custom-navbar shadow-lg">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#"><img src="~/images/logo2.png" style="width:60px; height:60px;" /></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarColor01">
-                    <ul class="navbar-nav me-auto" style="font-size:large;">
                 <!-- Brand -->
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i></i> Star Events
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logo2.png" alt="Star Events" style="width: 40px; height: 40px; margin-right: 10px;" />
+                    <span class="fw-bold fs-4">Star Events</span>
                 </a>
 
                 <!-- Mobile Toggle -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
                         aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <!-- Links -->
+                <!-- Navigation Links -->
                 <div class="collapse navbar-collapse" id="navbarMain">
+                    <!-- Left side: Navigation links -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link @(ViewData["Title"]?.ToString() == "Home" ? "active" : "")"
+                            <a class="nav-link @(ViewData["Title"]?.ToString() == "Home" ? "active" : "")" 
                                asp-area="" asp-controller="Home" asp-action="Index">
-                                Home
+                                <i class="bi bi-house-door me-1"></i>Home
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewData["Title"]?.ToString() == "Privacy" ? "active" : "")"
+                            <a class="nav-link @(ViewData["Title"]?.ToString() == "Privacy" ? "active" : "")" 
                                asp-area="" asp-controller="Home" asp-action="Privacy">
-                                Privacy
+                                <i class="bi bi-shield-check me-1"></i>Privacy
                             </a>
                         </li>
 
@@ -60,10 +61,14 @@
                         @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Manager"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Manager" asp-action="MyEvents">My Events</a>
+                                <a class="nav-link" asp-area="" asp-controller="Manager" asp-action="MyEvents">
+                                    <i class="bi bi-calendar-event me-1"></i>My Events
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Venues" asp-action="Index">Venues</a>
+                                <a class="nav-link" asp-area="" asp-controller="Venues" asp-action="Index">
+                                    <i class="bi bi-geo-alt me-1"></i>Venues
+                                </a>
                             </li>
                         }
 
@@ -71,25 +76,28 @@
                         @if (!(User?.Identity?.IsAuthenticated == true && User.IsInRole("Manager")))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Customer" asp-action="Index">Events</a>
+                                <a class="nav-link" asp-area="" asp-controller="Customer" asp-action="CustomerIndex">
+                                    <i class="bi bi-calendar3 me-1"></i>Events
+                                </a>
                             </li>
                             @if (User?.Identity?.IsAuthenticated == true)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Bookings" asp-action="Index">My Bookings</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Bookings" asp-action="Index">
+                                        <i class="bi bi-ticket-perforated me-1"></i>My Bookings
+                                    </a>
                                 </li>
                             }
                         }
                     </ul>
 
-                    <!-- Right Side: Login/Logout -->
-                    <div class="d-flex">
+                    <!-- Right side: Login / Register -->
+                    <div class="d-flex align-items-center">
                         <partial name="_LoginPartial" />
                     </div>
                 </div>
             </div>
         </nav>
-
     </header>
 
     <!-- Main Content -->
@@ -98,24 +106,149 @@
             @RenderBody()
         </main>
     </div>
-    @* <footer class="footer bg-dark text-light fixed-bottom shadow-lg">
-        <div class="container text-center py-2">
+   @*  <footer class="footer bg-dark text-light fixed-bottom shadow-lg">
+        <div class="container text-center py-1">
             <p class="mb-0 text-white-50 small">
                 &copy; @DateTime.Now.Year <strong>StarEvents Pvt Ltd</strong>. All rights reserved.
             </p>
         </div>
     </footer> *@
     <style>
+        /* Custom Navigation Bar Styling */
+        .custom-navbar {
+            background: #000000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 0;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .custom-navbar .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .custom-navbar .navbar-brand:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-navbar .navbar-brand i {
+            font-size: 1.5rem;
+            animation: twinkle 2s infinite;
+        }
+
+        @@keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .custom-navbar .nav-link {
+            color: white !important;
+            font-weight: 500;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1rem;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.25rem;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+        }
+
+        .custom-navbar .nav-link:hover {
+            color: white !important;
+            text-decoration: none;
+        }
+
+        .custom-navbar .nav-link.active {
+            color: white !important;
+            text-decoration: none;
+        }
+
+        .custom-navbar .nav-link i {
+            font-size: 1rem;
+            margin-right: 0.5rem;
+        }
+
+        .custom-navbar .navbar-toggler {
+            border: none;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .custom-navbar .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+        }
+
+        .custom-navbar .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Login/Register Button Styling */
+        .custom-navbar .btn-outline-light {
+            border: none !important;
+            background: none !important;
+            color: white !important;
+            font-weight: 500;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+            letter-spacing: 0.3px;
+            text-transform: none;
+            text-decoration: none;
+        }
+
+        .custom-navbar .btn-outline-light:hover {
+            color: white !important;
+            text-decoration: none;
+        }
+
+        .custom-navbar .btn-primary {
+            border: none !important;
+            background: none !important;
+            color: white !important;
+            font-weight: 500;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+            letter-spacing: 0.3px;
+            text-transform: none;
+            text-decoration: none;
+        }
+
+        .custom-navbar .btn-primary:hover {
+            color: white !important;
+            text-decoration: none;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 991.98px) {
+            .custom-navbar .navbar-nav {
+                text-align: center;
+                padding: 1rem 0;
+            }
+            
+            .custom-navbar .nav-link {
+                margin: 0.25rem 0;
+            }
+        }
+
+        /* Footer Styling */
         .footer-link {
-            color: #adb5bd; /* soft grey */
+            color: #adb5bd;
             text-decoration: none;
             transition: color 0.3s ease, text-decoration 0.3s ease;
         }
 
-            .footer-link:hover {
-                color: #ffffff; /* white on hover */
-                text-decoration: underline;
-            }
+        .footer-link:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
 
         .footer p {
             font-size: 0.7rem;

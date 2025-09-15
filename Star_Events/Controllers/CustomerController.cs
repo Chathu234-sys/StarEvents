@@ -18,7 +18,7 @@ namespace Star_Events.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> Index(string? category, string? city, DateTime? date)
+		public async Task<IActionResult> CustomerIndex(string? category, string? city, DateTime? date)
 		{
 			var events = (await _eventService.GetAllEventsAsync()).ToList();
 
@@ -60,19 +60,18 @@ namespace Star_Events.Controllers
 					.ToList();
 			}
 
-			return View(events);
+			return View("~/Views/Events/CustomerIndex.cshtml", events);
 		}
+        [AllowAnonymous]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var all = await _eventService.GetAllEventsAsync();
+            var ev = all.FirstOrDefault(e => e.Id == id);
 
-		[HttpGet]
-		public async Task<IActionResult> Details(Guid id)
-		{
-			var all = await _eventService.GetAllEventsAsync();
-			var ev = all.FirstOrDefault(e => e.Id == id);
+            if (ev == null)
+                return NotFound();
 
-			if (ev == null)
-				return NotFound();
-
-			return View(ev);
-		}
-	}
+            return View("~/Views/Events/Details.cshtml", ev);
+        }
+    }
 }

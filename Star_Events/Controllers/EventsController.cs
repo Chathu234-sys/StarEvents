@@ -47,6 +47,7 @@ namespace Star_Events.Controllers
         }
 
         // GET: Events/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -56,7 +57,9 @@ namespace Star_Events.Controllers
 
             var @event = await _context.Events
                 .Include(e => e.Venue)
+                .Include(e => e.TicketTypes)   //  load ticket types, not just sales
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (@event == null)
             {
                 return NotFound();

@@ -18,6 +18,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<TicketSale> TicketSales { get; set; }
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<BookingItem> BookingItems { get; set; }
+    public DbSet<Payment> Payments { get; set; }
+    public DbSet<Ticket> Tickets { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -41,6 +43,54 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Booking>()
             .Property(b => b.FinalAmount)
             .HasPrecision(18, 2);
+
+        builder.Entity<Payment>()
+            .Property(p => p.Amount)
+            .HasPrecision(18, 2);
+
+        // Configure Ticket relationships
+        builder.Entity<Ticket>()
+            .HasOne(t => t.Booking)
+            .WithMany()
+            .HasForeignKey(t => t.BookingId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Ticket>()
+            .HasOne(t => t.BookingItem)
+            .WithMany()
+            .HasForeignKey(t => t.BookingItemId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Ticket>()
+            .HasOne(t => t.Event)
+            .WithMany()
+            .HasForeignKey(t => t.EventId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Ticket>()
+            .HasOne(t => t.TicketType)
+            .WithMany()
+            .HasForeignKey(t => t.TicketTypeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Ticket>()
+            .HasOne(t => t.Customer)
+            .WithMany()
+            .HasForeignKey(t => t.CustomerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configure Payment relationships
+        builder.Entity<Payment>()
+            .HasOne(p => p.Booking)
+            .WithMany(b => b.Payments)
+            .HasForeignKey(p => p.BookingId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Payment>()
+            .HasOne(p => p.Customer)
+            .WithMany()
+            .HasForeignKey(p => p.CustomerId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Avoid multiple cascade paths for BookingItem -> TicketType
         builder.Entity<BookingItem>()

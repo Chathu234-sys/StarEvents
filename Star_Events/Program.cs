@@ -31,6 +31,20 @@ builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserBusiness, UserBusiness>();
 
+// Payments
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+// Tickets
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<ITicketService, TicketService>();
+
+// QR Code Service
+builder.Services.AddScoped<IQRCodeService, QRCodeService>();
+
+// Stripe Configuration
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

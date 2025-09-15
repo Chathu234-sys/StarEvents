@@ -1,0 +1,118 @@
+@model IEnumerable<Star_Events.Data.Entities.Ticket>
+@{
+    ViewData["Title"] = "Booking Tickets";
+}
+
+<div class="container py-5" style="background-color:#0b0e14;min-height:100vh;">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-white fw-bold">
+                    <i class="fas fa-ticket-alt me-2 text-primary"></i>
+                    Booking Tickets
+                </h2>
+                <a asp-controller="Bookings" asp-action="MyBookings" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Bookings
+                </a>
+            </div>
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["WarningMessage"] != null)
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    @TempData["WarningMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (Model.Any())
+            {
+                <div class="row g-4">
+                    @foreach (var ticket in Model)
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card border-0 shadow h-100" style="background:#111827;color:#d1d5db;">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <h5 class="card-title text-white mb-1">@(ticket.Event?.Name ?? "Unknown Event")</h5>
+                                            <p class="text-muted small mb-0">@(ticket.TicketType?.Name ?? "Unknown Type")</p>
+                                        </div>
+                                        <span class="badge @(ticket.Status == Star_Events.Data.Entities.TicketStatus.Active ? "bg-success" : 
+                                                              ticket.Status == Star_Events.Data.Entities.TicketStatus.Used ? "bg-warning" : 
+                                                              "bg-secondary")">
+                                            @ticket.Status
+                                        </span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <small class="text-muted">Ticket Number</small>
+                                                <div class="fw-bold">@ticket.DisplayTicketNumber</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">Event Date</small>
+                                                <div class="fw-bold">@(ticket.Event?.Date.ToString("MMM dd, yyyy") ?? "Unknown")</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <small class="text-muted">Time</small>
+                                                <div class="fw-bold">@(ticket.Event?.Time.ToString() ?? "Unknown")</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">Venue</small>
+                                                <div class="fw-bold">@(ticket.Event?.Venue?.Name ?? "Unknown")</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @if (!string.IsNullOrEmpty(ticket.QRCodeImagePath))
+                                    {
+                                        <div class="text-center mb-3">
+                                            <img src="@ticket.QRCodeImagePath" alt="QR Code" class="img-fluid" style="max-width: 120px; max-height: 120px;" />
+                                        </div>
+                                    }
+
+                                    <div class="d-grid gap-2">
+                                        <a asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-primary">
+                                            <i class="fas fa-eye me-2"></i>View Details
+                                        </a>
+                                        @if (ticket.Status == Star_Events.Data.Entities.TicketStatus.Active)
+                                        {
+                                            <a asp-action="QRCode" asp-route-id="@ticket.Id" class="btn btn-outline-success">
+                                                <i class="fas fa-qrcode me-2"></i>Show QR Code
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-ticket-alt fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">No tickets found for this booking</h4>
+                    <p class="text-muted">Tickets will be generated after payment is completed.</p>
+                    <a asp-controller="Bookings" asp-action="MyBookings" class="btn btn-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Bookings
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

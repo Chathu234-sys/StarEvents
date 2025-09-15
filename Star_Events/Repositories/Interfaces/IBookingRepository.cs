@@ -7,6 +7,7 @@ namespace Star_Events.Repositories.Interfaces
         Task<IEnumerable<Booking>> GetByCustomerIdAsync(string customerId);
         Task<Booking?> GetByIdAsync(int id);
         Task AddAsync(Booking booking);
+        Task<Booking> UpdateAsync(Booking booking);
         Task SaveAsync();
     }
 }

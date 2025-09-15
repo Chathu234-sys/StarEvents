@@ -1,0 +1,127 @@
+@model Star_Events.Data.Entities.Ticket
+@{
+    ViewData["Title"] = "Ticket Details";
+}
+
+<div class="container py-5" style="background-color:#0b0e14;min-height:100vh;">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow" style="background:#111827;color:#d1d5db;">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-ticket-alt fa-3x text-primary mb-3"></i>
+                        <h2 class="fw-bold text-white">Ticket Details</h2>
+                        <p class="text-muted">Your event ticket information</p>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h5 class="fw-bold mb-3 text-primary">
+                                <i class="fas fa-info-circle me-2"></i>Ticket Information
+                            </h5>
+                            <div class="card border-0" style="background:#0f1623;">
+                                <div class="card-body">
+                                    <div class="row mb-2">
+                                        <div class="col-6"><strong>Ticket Number:</strong></div>
+                                        <div class="col-6">@Model.DisplayTicketNumber</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-6"><strong>Ticket Type:</strong></div>
+                                        <div class="col-6">@Model.TicketType.Name</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-6"><strong>Status:</strong></div>
+                                        <div class="col-6">
+                                            <span class="badge @(Model.Status == Star_Events.Data.Entities.TicketStatus.Active ? "bg-success" : 
+                                                              Model.Status == Star_Events.Data.Entities.TicketStatus.Used ? "bg-warning" : 
+                                                              "bg-secondary")">
+                                                @Model.Status
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-6"><strong>Price:</strong></div>
+                                        <div class="col-6">Rs. @Model.TicketType.Price.ToString("N0")</div>
+                                    </div>
+                                    @if (Model.UsedAt.HasValue)
+                                    {
+                                        <div class="row mb-2">
+                                            <div class="col-6"><strong>Used At:</strong></div>
+                                            <div class="col-6">@Model.UsedAt.Value.ToString("MMM dd, yyyy HH:mm")</div>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(Model.UsedBy))
+                                        {
+                                            <div class="row mb-2">
+                                                <div class="col-6"><strong>Used By:</strong></div>
+                                                <div class="col-6">@Model.UsedBy</div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5 class="fw-bold mb-3 text-primary">
+                                <i class="fas fa-calendar-alt me-2"></i>Event Information
+                            </h5>
+                            <div class="card border-0" style="background:#0f1623;">
+                                <div class="card-body">
+                                    <h6 class="fw-bold text-white">@Model.Event.Name</h6>
+                                    <p class="text-muted small mb-3">@Model.Event.Description</p>
+                                    <div class="row mb-2">
+                                        <div class="col-6"><strong>Date:</strong></div>
+                                        <div class="col-6">@Model.Event.Date.ToString("MMM dd, yyyy")</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-6"><strong>Time:</strong></div>
+                                        <div class="col-6">@Model.Event.Time</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-6"><strong>Venue:</strong></div>
+                                        <div class="col-6">@Model.Event.Venue.Name</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-6"><strong>Address:</strong></div>
+                                        <div class="col-6">@Model.Event.Venue.Address</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-6"><strong>City:</strong></div>
+                                        <div class="col-6">@Model.Event.Venue.City</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.QRCodeImagePath))
+                    {
+                        <div class="mt-4 text-center">
+                            <h5 class="fw-bold mb-3 text-primary">
+                                <i class="fas fa-qrcode me-2"></i>QR Code
+                            </h5>
+                            <div class="card border-0 d-inline-block" style="background:#0f1623;">
+                                <div class="card-body text-center">
+                                    <img src="@Model.QRCodeImagePath" alt="QR Code" class="img-fluid mb-3" style="max-width: 200px; max-height: 200px;" />
+                                    <p class="text-muted small mb-0">Present this QR code at the event entrance</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="d-grid gap-2 mt-4">
+                        <a asp-action="MyTickets" class="btn btn-primary btn-lg">
+                            <i class="fas fa-list me-2"></i>All My Tickets
+                        </a>
+                        <a asp-controller="Bookings" asp-action="Details" asp-route-id="@Model.BookingId" class="btn btn-outline-primary">
+                            <i class="fas fa-receipt me-2"></i>View Booking
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

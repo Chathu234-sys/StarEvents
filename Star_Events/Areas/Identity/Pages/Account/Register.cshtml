@@ -4,63 +4,154 @@
     ViewData["Title"] = "Register";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container-fluid">
+    <div class="row justify-content-center align-items-center min-vh-100 register-bg">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 text-light glass-card">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <i class="fas fa-user-plus fa-4x text-accent"></i>
+                        </div>
+                        <h2 class="fw-bold text-light">Create a New Account</h2>
+                        <p class="text-muted">Fill the form to continue</p>
+                    </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="text-black-50">
-            <h3 class="text-white-50">Create a new account.</h3>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="First Name" />
-                <label asp-for="Input.FirstName">First Name</label>
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="text-light">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.FirstName" class="form-control bg-dark text-light" aria-required="true" placeholder="First Name" />
+                            <label asp-for="Input.FirstName">First Name</label>
+                            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.LastName" class="form-control bg-dark text-light" aria-required="true" placeholder="Last Name" />
+                            <label asp-for="Input.LastName">Last Name</label>
+                            <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email" class="form-control bg-dark text-light" aria-required="true" placeholder="Your Email" />
+                            <label asp-for="Input.Email">Email</label>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.ContactNumber" class="form-control bg-dark text-light" aria-required="true" placeholder="Contact Number" />
+                            <label asp-for="Input.ContactNumber">Contact Number</label>
+                            <span asp-validation-for="Input.ContactNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Password" class="form-control bg-dark text-light" autocomplete="new-password" aria-required="true" placeholder="Password" />
+                            <label asp-for="Input.Password">Password</label>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.ConfirmPassword" class="form-control bg-dark text-light" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" />
+                            <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <!-- Role dropdown -->
+                        <div class="form-floating mb-4">
+                            <select asp-for="Input.Role" class="form-select bg-dark text-light border-0" asp-items="Model.Roles"></select>
+                            <label asp-for="Input.Role">Role</label>
+                            <span asp-validation-for="Input.Role" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button id="registerSubmit" type="submit" class="btn btn-register btn-lg">
+                                <i class="fas fa-user-plus me-2"></i> Register
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="mb-1 text-muted">
+                            Already have an account?
+                            <a asp-page="./Login" class="text-decoration-none text-accent fw-bold">Sign in</a>
+                        </p>
+                        <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-light">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Home
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="Last Name" />
-                <label asp-for="Input.LastName">Last Name</label>
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" aria-required="true" placeholder="Your Email" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ContactNumber" class="form-control" aria-required="true" placeholder="Contact Number" />
-                <label asp-for="Input.ContactNumber">Contact Number</label>
-                <span asp-validation-for="Input.ContactNumber" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <select asp-for="Input.Role" class="form-control" asp-items="Model.Roles"></select>
-                <label asp-for="Input.Role">Role</label>
-                <span asp-validation-for="Input.Role" class="text-danger"></span>
-            </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
+        </div>
     </div>
 </div>
-
-@* @if (TempData["Message"] != null)
-{
-    <div class="alert alert-dismissible alert-success">
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        @TempData["Message"]
-    </div>
-}
- *@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<style>
+    /* Background gradient for full page */
+    .register-bg {
+        background: linear-gradient(135deg, #0b0e14 0%, #141822 50%, #0b0e14 100%);
+    }
+
+    /* Glassmorphism card - slightly lighter with white touch */
+    .glass-card {
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.08); /* white overlay */
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Floating labels */
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-select:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label,
+    .form-floating > .form-select:not(:placeholder-shown) ~ label {
+        color: #7da6ff;
+    }
+
+    /* Inputs & dropdown */
+    .form-control,
+    .form-select {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background-color: rgba(0, 0, 0, 0.6) !important;
+        color: #fff !important;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #7da6ff;
+            box-shadow: 0 0 8px rgba(108, 157, 252, 0.6);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+    /* Register button with icon */
+    .btn-register {
+        background: linear-gradient(135deg, #7da6ff 0%, #3b82f6 100%);
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease-in-out;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 157, 252, 0.5);
+        }
+
+    /* Accent links */
+    .text-accent {
+        color: #7da6ff !important;
+    }
+
+        .text-accent:hover {
+            color: #3b82f6 !important;
+        }
+</style>

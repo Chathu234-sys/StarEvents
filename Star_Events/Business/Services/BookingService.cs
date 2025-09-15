@@ -95,17 +95,63 @@ namespace Star_Events.Business.Services
             await _repo.AddAsync(booking);
             await _repo.SaveAsync();
 
-            // Decrement availability
+            // Decrement availability and record ticket sales
+            var ticketSales = new List<TicketSale>();
             foreach (var item in items)
             {
                 var tt = ticketTypes[item.TicketTypeId];
                 tt.TotalAvailable -= item.Quantity;
                 if (tt.TotalAvailable < 0) tt.TotalAvailable = 0;
+
+                // Record ticket sale
+                ticketSales.Add(new TicketSale
+                {
+                    Id = Guid.NewGuid(),
+                    EventId = eventId,
+                    TicketTypeId = item.TicketTypeId,
+                    Quantity = item.Quantity,
+                    TotalAmount = item.TotalPrice,
+                    CustomerId = customerId,
+                    Status = "Pending", // Will be updated to "Confirmed" after payment
+                    SaleDate = DateTime.UtcNow
+                });
+            }
+
+            // Add ticket sales to database
+            _db.TicketSales.AddRange(ticketSales);
+            await _db.SaveChangesAsync();
+            await tx.CommitAsync();
+            return booking;
+        }
+
+        public async Task<bool> ConfirmPaymentAsync(int bookingId)
+        {
+            var booking = await _db.Bookings
+                .Include(b => b.BookingItems)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
+
+            if (booking == null || booking.Status != BookingStatus.Pending)
+                return false;
+
+            using var tx = await _db.Database.BeginTransactionAsync();
+
+            // Update booking status
+            booking.Status = BookingStatus.Confirmed;
+            booking.PaymentDate = DateTime.UtcNow;
+
+            // Update related ticket sales status
+            var ticketSales = await _db.TicketSales
+                .Where(ts => ts.EventId == booking.EventId && ts.CustomerId == booking.CustomerId)
+                .ToListAsync();
+
+            foreach (var sale in ticketSales)
+            {
+                sale.Status = "Confirmed";
             }
 
             await _db.SaveChangesAsync();
             await tx.CommitAsync();
-            return booking;
+            return true;
         }
 
         private async Task<string> GenerateNumberAsync()
