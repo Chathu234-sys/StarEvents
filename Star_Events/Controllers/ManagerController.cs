@@ -239,6 +239,16 @@ namespace Star_Events.Controllers
             ViewBag.SalesGrouped = grouped; // for charts / summary
             ViewBag.TotalTicketsSold = sales.Sum(s => s.Quantity);
             ViewBag.TotalSalesCount = sales.Count;
+
+            // Daily revenue timeseries for line chart
+            var daily = sales
+                .GroupBy(s => s.SaleDate.Date)
+                .OrderBy(g => g.Key)
+                .Select(g => new { Date = g.Key, Amount = g.Sum(x => x.TotalAmount) })
+                .ToList();
+
+            ViewBag.DailyLabels = string.Join(",", daily.Select(d => $"'{d.Date:MMM dd}'"));
+            ViewBag.DailyAmounts = string.Join(",", daily.Select(d => d.Amount));
             return View(sales);
         }
     }

@@ -61,6 +61,12 @@
                 <canvas id="revenueChart"></canvas>
             </div>
         </div>
+        <div class="col-md-12 mb-4">
+            <div class="card shadow-lg border-0 rounded-4 p-3 bg-dark text-light">
+                <h5 class="fw-bold">Daily Revenue (Line)</h5>
+                <canvas id="dailyRevenueChart"></canvas>
+            </div>
+        </div>
     </div>
 
     <!-- Sales Table -->
@@ -144,6 +150,8 @@
     const labels = [@Html.Raw(labels)];
     const quantities = [@Html.Raw(quantities)];
     const revenues = [@Html.Raw(revenues)];
+    const dailyLabels = [@Html.Raw(ViewBag.DailyLabels ?? "")];
+    const dailyAmounts = [@Html.Raw(ViewBag.DailyAmounts ?? "")];
 
     // Quantity Chart
     new Chart(document.getElementById("quantityChart"), {
@@ -172,6 +180,28 @@
                     "#ff6384", "#36a2eb", "#ffcd56", "#4bc0c0", "#9966ff", "#ff9f40"
                 ]
             }]
+        }
+    });
+
+    // Daily Revenue Line Chart
+    new Chart(document.getElementById('dailyRevenueChart'), {
+        type: 'line',
+        data: {
+            labels: dailyLabels,
+            datasets: [{
+                label: 'Revenue by day',
+                data: dailyAmounts,
+                borderColor: '#02e2f7',
+                backgroundColor: 'rgba(2, 226, 247, 0.2)',
+                tension: 0.3,
+                fill: true,
+                pointRadius: 3
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
         }
     });
 </script>
