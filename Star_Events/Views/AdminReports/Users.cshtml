@@ -1,0 +1,23 @@
+@using Star_Events.Data.Entities
+@model IEnumerable<UserModel>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h2 class="text-white mb-1">Users Report</h2>
+      <div class="text-white-50">All users grouped by role</div>
+    </div>
+    <div class="btn-group">
+      <a asp-action="UsersPdf" class="btn btn-outline-light"><i class="bi bi-file-earmark-pdf me-1"></i>PDF</a>
+      <a asp-action="UsersExcel" class="btn btn-outline-success"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
+    </div>
+  </div>
+  <table class="table table-dark table-striped table-hover align-middle rounded-3 overflow-hidden">
+    <thead><tr><th>First</th><th>Last</th><th>Email</th><th>Role</th></tr></thead>
+    <tbody>
+    @foreach (var u in Model) {
+      <tr><td>@u.FirstName</td><td>@u.LastName</td><td>@u.Email</td><td><span class="badge bg-secondary">@u.Role</span></td></tr>
+    }
+    </tbody>
+  </table>
+</div>
+

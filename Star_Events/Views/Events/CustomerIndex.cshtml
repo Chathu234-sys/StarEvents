@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <form asp-controller="Events" asp-action="Index" method="get">
+    <form asp-controller="Customer" asp-action="CustomerIndex" method="get">
         <div class="p-4 mb-5 shadow" style="background:#111827;border-radius:20px;">
             <div class="row g-3 align-items-end">
                 <div class="col-md-4">
@@ -93,7 +93,7 @@
                         </div>
                         <hr />
                         @{
-                            var regular = e.TicketTypes?.FirstOrDefault(tt => string.Equals(tt.Name, "Regular", StringComparison.OrdinalIgnoreCase));
+                            var regular = e.TicketTypes?.FirstOrDefault(tt => string.Equals(tt.Name, "Seating", StringComparison.OrdinalIgnoreCase));
                             var price = regular?.Price ?? (e.TicketTypes?.Min(tt => tt.Price) ?? 0);
                         }
                         <div class="d-flex align-items-center mb-3">

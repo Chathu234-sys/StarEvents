@@ -89,6 +89,16 @@
                                 </li>
                             }
                         }
+
+                        @* Admin Reports *@
+                        @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="AdminReports" asp-action="Dashboard">
+                                    <i class="bi bi-speedometer2 me-1"></i>Admin Dashboard
+                                </a>
+                            </li>
+                        }
                     </ul>
 
                     <!-- Right side: Login / Register -->

@@ -1,0 +1,69 @@
+@{
+    ViewData["Title"] = "Admin Analytics";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="text-white fw-bold mb-1">Admin Analytics</h2>
+            <div class="text-white-50">Key metrics and trends across the platform</div>
+        </div>
+        <div class="btn-group">
+            <a asp-controller="AdminReports" asp-action="Users" class="btn btn-outline-light"><i class="bi bi-people me-1"></i>Users</a>
+            <a asp-controller="AdminReports" asp-action="Events" class="btn btn-outline-light"><i class="bi bi-calendar3 me-1"></i>Events</a>
+            <a asp-controller="AdminReports" asp-action="Bookings" class="btn btn-outline-light"><i class="bi bi-ticket-perforated me-1"></i>Bookings</a>
+            <a asp-controller="AdminReports" asp-action="Sales" class="btn btn-outline-light"><i class="bi bi-cash-coin me-1"></i>Sales</a>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card bg-dark text-light p-3 rounded-4 shadow-sm"><div class="small text-muted">Events</div><div class="h4 mb-0">@ViewBag.TotalEvents</div></div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-dark text-light p-3 rounded-4 shadow-sm"><div class="small text-muted">Users</div><div class="h4 mb-0">@ViewBag.TotalUsers</div></div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-dark text-light p-3 rounded-4 shadow-sm"><div class="small text-muted">Bookings</div><div class="h4 mb-0">@ViewBag.TotalBookings</div></div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-dark text-light p-3 rounded-4 shadow-sm"><div class="small text-muted">Revenue</div><div class="h4 mb-0">Rs. @(((decimal)ViewBag.TotalRevenue).ToString("N0"))</div></div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-8">
+            <div class="card bg-dark text-light p-3">
+                <h5 class="fw-bold">Daily Revenue</h5>
+                <canvas id="daily"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-light p-3">
+                <h5 class="fw-bold">Users by Role</h5>
+                <canvas id="roles"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-dark text-light p-3">
+        <h5 class="fw-bold">Top Event Revenue</h5>
+        <canvas id="topEvents"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const dailyLabels = [@Html.Raw(ViewBag.DailyLabels)];
+const dailyAmounts = [@Html.Raw(ViewBag.DailyAmounts)];
+new Chart(document.getElementById('daily'), { type:'line', data:{ labels: dailyLabels, datasets:[{ label:'Revenue', data: dailyAmounts, borderColor:'#02e2f7', backgroundColor:'rgba(2,226,247,0.2)', fill:true, tension:.3 }]}, options:{ scales:{ y:{ beginAtZero:true } } }});
+
+const roleLabels = [@Html.Raw(ViewBag.UserRoleLabels)];
+const roleData = [@Html.Raw(ViewBag.UserRoleData)];
+new Chart(document.getElementById('roles'), { type:'doughnut', data:{ labels: roleLabels, datasets:[{ data: roleData, backgroundColor:['#36a2eb','#ffcd56','#9966ff'] }] } });
+
+const evLabels = [@Html.Raw(ViewBag.EventRevenueLabels ?? "")];
+const evData = [@Html.Raw(ViewBag.EventRevenueData ?? "")];
+new Chart(document.getElementById('topEvents'), { type:'bar', data:{ labels: evLabels, datasets:[{ label:'Revenue', data: evData, backgroundColor:'#4bc0c0' }] } });
+</script>
+
