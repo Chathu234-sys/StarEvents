@@ -32,11 +32,11 @@ namespace Star_Events.Models.ViewModels
         public decimal VipPrice { get; set; }
         public int VipTotal { get; set; }
 
-        public decimal RegularPrice { get; set; }
-        public int RegularTotal { get; set; }
+        public decimal SeatingPrice { get; set; }
+        public int SeatingTotal { get; set; }
 
-        public decimal ChildrenPrice { get; set; }
-        public int ChildrenTotal { get; set; }
+        public decimal StandingPrice { get; set; }
+        public int StandingTotal { get; set; }
     }
 }
 

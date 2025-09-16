@@ -8,7 +8,7 @@ namespace Star_Events.Data.Entities
         public Guid Id { get; set; }
 
         [Required]
-        public string Name { get; set; } = string.Empty; // e.g., VIP, Regular, Student
+        public string Name { get; set; } = string.Empty; // e.g., VIP, Seating, Standing
 
 
         [Range(0, 999999)]

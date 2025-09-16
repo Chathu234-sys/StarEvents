@@ -95,8 +95,8 @@ namespace Star_Events.Controllers
                 // seed ticket types (VIP, Seating, Standing)
                 var types = new List<TicketType>();
                 if (model.VipTotal > 0) types.Add(new TicketType { Id = Guid.NewGuid(), EventId = ev.Id, Name = "VIP", Price = model.VipPrice, TotalAvailable = model.VipTotal });
-                if (model.RegularTotal > 0) types.Add(new TicketType { Id = Guid.NewGuid(), EventId = ev.Id, Name = "Seating", Price = model.RegularPrice, TotalAvailable = model.RegularTotal });
-                if (model.ChildrenTotal > 0) types.Add(new TicketType { Id = Guid.NewGuid(), EventId = ev.Id, Name = "Standing", Price = model.ChildrenPrice, TotalAvailable = model.ChildrenTotal });
+                if (model.SeatingTotal > 0) types.Add(new TicketType { Id = Guid.NewGuid(), EventId = ev.Id, Name = "Seating", Price = model.SeatingPrice, TotalAvailable = model.SeatingTotal });
+                if (model.StandingTotal > 0) types.Add(new TicketType { Id = Guid.NewGuid(), EventId = ev.Id, Name = "Standing", Price = model.StandingPrice, TotalAvailable = model.StandingTotal });
                 if (types.Any())
                 {
                     _context.TicketTypes.AddRange(types);
