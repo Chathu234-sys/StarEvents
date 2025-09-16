@@ -1,0 +1,30 @@
+@model IEnumerable<Star_Events.Data.Entities.Booking>
+<div class="container py-4">
+  <form method="get" class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h2 class="text-white mb-1">Bookings Report</h2>
+      <div class="text-white-50">Event specific bookings and status</div>
+    </div>
+    <div class="d-flex gap-2">
+      <select name="eventId" class="form-select bg-dark text-light">
+        @foreach (var e in (IEnumerable<dynamic>)ViewBag.Events ?? new List<dynamic>())
+        {
+            var isSelected = (ViewBag.SelectedEventId == e.Id);
+            <option value="@e.Id" selected="@(isSelected ? "selected" : null)">@e.Name</option>
+        }
+      </select>
+      <button type="submit" class="btn btn-outline-light">Apply</button>
+      <a asp-action="BookingsPdf" asp-route-eventId="@ViewBag.SelectedEventId" class="btn btn-outline-light"><i class="bi bi-file-earmark-pdf me-1"></i>PDF</a>
+      <a asp-action="BookingsExcel" asp-route-eventId="@ViewBag.SelectedEventId" class="btn btn-outline-success"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
+    </div>
+  </form>
+  <table class="table table-dark table-striped table-hover align-middle rounded-3 overflow-hidden">
+    <thead><tr><th>#</th><th>Event</th><th>Date</th><th>Status</th><th>Amount</th></tr></thead>
+    <tbody>
+    @foreach (var b in Model) {
+      <tr><td>@b.Id</td><td>@b.Event?.Name</td><td>@b.BookingDate.ToString("yyyy-MM-dd")</td><td><span class="badge @(b.Status.ToString()=="Confirmed"?"bg-success":"bg-warning")">@b.Status</span></td><td><strong>Rs. @b.FinalAmount.ToString("N0")</strong></td></tr>
+    }
+    </tbody>
+  </table>
+</div>
+

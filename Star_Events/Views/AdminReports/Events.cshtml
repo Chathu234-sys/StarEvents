@@ -1,0 +1,22 @@
+@model IEnumerable<dynamic>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h2 class="text-white mb-1">Events Report</h2>
+      <div class="text-white-50">Performance and revenue by event</div>
+    </div>
+    <div class="btn-group">
+      <a asp-action="EventsPdf" class="btn btn-outline-light"><i class="bi bi-file-earmark-pdf me-1"></i>PDF</a>
+      <a asp-action="EventsExcel" class="btn btn-outline-success"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
+    </div>
+  </div>
+  <table class="table table-dark table-striped table-hover align-middle rounded-3 overflow-hidden">
+    <thead><tr><th>Event</th><th>Date</th><th>Location</th><th>Tickets</th><th>Revenue</th></tr></thead>
+    <tbody>
+    @foreach (var e in Model) {
+      <tr><td>@e.Name</td><td>@e.Date.ToString("yyyy-MM-dd")</td><td>@e.Location</td><td><span class="badge bg-info">@e.Tickets</span></td><td><strong>Rs. @e.Revenue.ToString("N0")</strong></td></tr>
+    }
+    </tbody>
+  </table>
+</div>
+

@@ -8,6 +8,10 @@ using Star_Events.Data;
 using Microsoft.AspNetCore.Identity;
 using Star_Events.Models;
 using System.Security.Claims;
+using ClosedXML.Excel;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 
 
 namespace Star_Events.Controllers
@@ -88,11 +92,11 @@ namespace Star_Events.Controllers
                 ev.PosterUrl = await SavePoster(poster);
                 await _eventService.CreateEventAsync(ev);
 
-                // seed ticket types
+                // seed ticket types (VIP, Seating, Standing)
                 var types = new List<TicketType>();
                 if (model.VipTotal > 0) types.Add(new TicketType { Id = Guid.NewGuid(), EventId = ev.Id, Name = "VIP", Price = model.VipPrice, TotalAvailable = model.VipTotal });
-                if (model.RegularTotal > 0) types.Add(new TicketType { Id = Guid.NewGuid(), EventId = ev.Id, Name = "Regular", Price = model.RegularPrice, TotalAvailable = model.RegularTotal });
-                if (model.ChildrenTotal > 0) types.Add(new TicketType { Id = Guid.NewGuid(), EventId = ev.Id, Name = "Children", Price = model.ChildrenPrice, TotalAvailable = model.ChildrenTotal });
+                if (model.RegularTotal > 0) types.Add(new TicketType { Id = Guid.NewGuid(), EventId = ev.Id, Name = "Seating", Price = model.RegularPrice, TotalAvailable = model.RegularTotal });
+                if (model.ChildrenTotal > 0) types.Add(new TicketType { Id = Guid.NewGuid(), EventId = ev.Id, Name = "Standing", Price = model.ChildrenPrice, TotalAvailable = model.ChildrenTotal });
                 if (types.Any())
                 {
                     _context.TicketTypes.AddRange(types);
@@ -250,6 +254,115 @@ namespace Star_Events.Controllers
             ViewBag.DailyLabels = string.Join(",", daily.Select(d => $"'{d.Date:MMM dd}'"));
             ViewBag.DailyAmounts = string.Join(",", daily.Select(d => d.Amount));
             return View(sales);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportToCsv(Guid eventId)
+        {
+            var sales = await _context.TicketSales
+                .Where(s => s.EventId == eventId)
+                .Include(s => s.TicketType)
+                .OrderBy(s => s.SaleDate)
+                .ToListAsync();
+
+            var lines = new List<string> { "TicketType,Quantity,TotalAmount,SaleDate" };
+            lines.AddRange(sales.Select(s => $"{EscapeCsv(s.TicketType.Name)},{s.Quantity},{s.TotalAmount},{s.SaleDate:yyyy-MM-dd}"));
+            var bytes = System.Text.Encoding.UTF8.GetBytes(string.Join("\n", lines));
+            return File(bytes, "text/csv", "ticket-sales.csv");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportToExcel(Guid eventId)
+        {
+            var sales = await _context.TicketSales
+                .Where(s => s.EventId == eventId)
+                .Include(s => s.TicketType)
+                .OrderBy(s => s.SaleDate)
+                .ToListAsync();
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.AddWorksheet("Sales");
+            ws.Cell(1, 1).Value = "Ticket Type";
+            ws.Cell(1, 2).Value = "Quantity";
+            ws.Cell(1, 3).Value = "Total Amount";
+            ws.Cell(1, 4).Value = "Sale Date";
+            int row = 2;
+            foreach (var s in sales)
+            {
+                ws.Cell(row, 1).Value = s.TicketType.Name;
+                ws.Cell(row, 2).Value = s.Quantity;
+                ws.Cell(row, 3).Value = s.TotalAmount;
+                ws.Cell(row, 4).Value = s.SaleDate.ToString("yyyy-MM-dd");
+                row++;
+            }
+            ws.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ticket-sales.xlsx");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportToPdf(Guid eventId)
+        {
+            var sales = await _context.TicketSales
+                .Where(s => s.EventId == eventId)
+                .Include(s => s.TicketType)
+                .OrderBy(s => s.SaleDate)
+                .ToListAsync();
+
+            QuestPDF.Settings.License = LicenseType.Community;
+
+            var doc = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(20);
+                    page.Header().Text("Ticket Sales Report").SemiBold().FontSize(18).FontColor(Colors.Blue.Medium);
+                    page.Content().Table(table =>
+                    {
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.RelativeColumn();
+                            columns.ConstantColumn(70);
+                            columns.ConstantColumn(90);
+                            columns.ConstantColumn(90);
+                        });
+
+                        table.Header(header =>
+                        {
+                            header.Cell().Element(CellStyle).Text("Ticket Type");
+                            header.Cell().Element(CellStyle).Text("Quantity");
+                            header.Cell().Element(CellStyle).Text("Total Amount");
+                            header.Cell().Element(CellStyle).Text("Sale Date");
+                        });
+
+                        foreach (var s in sales)
+                        {
+                            table.Cell().Element(CellStyle).Text(s.TicketType.Name);
+                            table.Cell().Element(CellStyle).Text(s.Quantity.ToString());
+                            table.Cell().Element(CellStyle).Text($"Rs. {s.TotalAmount:N0}");
+                            table.Cell().Element(CellStyle).Text(s.SaleDate.ToString("yyyy-MM-dd"));
+                        }
+
+                        IContainer CellStyle(IContainer c) => c.Border(0.5f).Padding(4);
+                    });
+                });
+            });
+
+            using var ms = new MemoryStream();
+            doc.GeneratePdf(ms);
+            var bytes = ms.ToArray();
+            return File(bytes, "application/pdf", "ticket-sales.pdf");
+        }
+
+        private string EscapeCsv(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return string.Empty;
+            if (input.Contains(',') || input.Contains('"'))
+                return '"' + input.Replace("\"", "\"\"") + '"';
+            return input;
         }
     }
 }
