@@ -44,11 +44,72 @@ namespace Star_Events.Repositories.Services
 
         public async Task DeleteAsync(Guid id)
         {
-            var ev = await GetByIdAsync(id);
-            if (ev != null)
+            // Delete in dependency-safe order to satisfy FK constraints
+            var ev = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
+            if (ev == null)
+                return;
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
+                // 1) Remove Tickets for this Event (they reference TicketType and BookingItem with Restrict)
+                var tickets = await _context.Tickets
+                    .Where(t => t.EventId == id)
+                    .ToListAsync();
+                if (tickets.Count > 0)
+                {
+                    _context.Tickets.RemoveRange(tickets);
+                    await _context.SaveChangesAsync();
+                }
+
+                // 2) Remove Bookings for this Event (Payments and BookingItems are set to Cascade on Booking)
+                var bookings = await _context.Bookings
+                    .Where(b => b.EventId == id)
+                    .ToListAsync();
+                if (bookings.Count > 0)
+                {
+                    _context.Bookings.RemoveRange(bookings);
+                    await _context.SaveChangesAsync();
+                }
+
+                // 3) Remove TicketSales related to this Event or its TicketTypes
+                var ticketTypeIds = await _context.TicketTypes
+                    .Where(tt => tt.EventId == id)
+                    .Select(tt => tt.Id)
+                    .ToListAsync();
+
+                if (ticketTypeIds.Count > 0)
+                {
+                    var ticketSales = await _context.TicketSales
+                        .Where(ts => ts.EventId == id || ticketTypeIds.Contains(ts.TicketTypeId))
+                        .ToListAsync();
+                    if (ticketSales.Count > 0)
+                    {
+                        _context.TicketSales.RemoveRange(ticketSales);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
+                // 4) Remove TicketTypes for this Event (now safe after removing Tickets and BookingItems via Booking cascade)
+                var ticketTypes = await _context.TicketTypes
+                    .Where(tt => tt.EventId == id)
+                    .ToListAsync();
+                if (ticketTypes.Count > 0)
+                {
+                    _context.TicketTypes.RemoveRange(ticketTypes);
+                    await _context.SaveChangesAsync();
+                }
+
+                // 5) Finally remove the Event
                 _context.Events.Remove(ev);
                 await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
             }
         }
 
