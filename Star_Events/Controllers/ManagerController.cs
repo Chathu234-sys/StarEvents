@@ -12,6 +12,7 @@ using ClosedXML.Excel;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using Star_Events.Models.ViewModels;
 
 
 namespace Star_Events.Controllers
@@ -23,13 +24,15 @@ namespace Star_Events.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public ManagerController(IEventService eventService, ApplicationDbContext context, IWebHostEnvironment env, UserManager<ApplicationUser> userManager)
+        public ManagerController(IEventService eventService, ApplicationDbContext context, IWebHostEnvironment env, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _eventService = eventService;
             _context = context;
             _env = env;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
 
@@ -44,6 +47,107 @@ namespace Star_Events.Controllers
             var events = await _eventService.GetAllEventsAsync();
             var myEvents = events.Where(e => e.ManagerId == managerId).ToList(); // Filter events by current manager
             return View(myEvents);
+        }
+
+        // Personal Info (Manager)
+        public async Task<IActionResult> PersonalInfo()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+            var vm = new Star_Events.Models.ViewModels.ProfileInputViewModel
+            {
+                Email = user.Email ?? string.Empty,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ContactNumber = user.ContactNumber
+            };
+            return View("~/Views/Manager/PersonalInfo.cshtml", vm);
+        }
+
+        public async Task<IActionResult> EditPersonalInfo()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+            var vm = new Star_Events.Models.ViewModels.ProfileInputViewModel
+            {
+                Email = user.Email ?? string.Empty,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ContactNumber = user.ContactNumber
+            };
+            return View("~/Views/Manager/EditPersonalInfo.cshtml", vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPersonalInfo(ProfileInputViewModel input)
+        {
+            if (!ModelState.IsValid) return View("~/Views/Manager/EditPersonalInfo.cshtml", input);
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+            user.FirstName = input.FirstName ?? string.Empty;
+            user.LastName = input.LastName ?? string.Empty;
+            user.ContactNumber = input.ContactNumber ?? string.Empty;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                foreach (var e in result.Errors) ModelState.AddModelError(string.Empty, e.Description);
+                return View("~/Views/Manager/EditPersonalInfo.cshtml", input);
+            }
+            await _signInManager.RefreshSignInAsync(user);
+            TempData["SuccessMessage"] = "Profile updated successfully.";
+            return RedirectToAction(nameof(PersonalInfo));
+        }
+
+        // Change Password (Manager)
+        public IActionResult ChangePassword()
+        {
+            return View("~/Views/Manager/ChangePassword.cshtml", new ChangePasswordViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel input)
+        {
+            if (!ModelState.IsValid) return View("~/Views/Manager/ChangePassword.cshtml", input);
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+            var result = await _userManager.ChangePasswordAsync(user, input.CurrentPassword, input.NewPassword);
+            if (!result.Succeeded)
+            {
+                foreach (var e in result.Errors) ModelState.AddModelError(string.Empty, e.Description);
+                return View("~/Views/Manager/ChangePassword.cshtml", input);
+            }
+            await _signInManager.RefreshSignInAsync(user);
+            TempData["SuccessMessage"] = "Password changed successfully.";
+            return RedirectToAction(nameof(PersonalInfo));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+            var userId = user.Id;
+
+            // Block delete if manages events
+            var managesEvents = await _context.Events.AnyAsync(e => e.ManagerId == userId);
+            if (managesEvents)
+            {
+                TempData["SuccessMessage"] = "Account cannot be deleted while you have events. Delete/transfer events first.";
+                return RedirectToAction(nameof(PersonalInfo));
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                TempData["SuccessMessage"] = string.Join(" ", result.Errors.Select(e => e.Description));
+                return RedirectToAction(nameof(PersonalInfo));
+            }
+            await _signInManager.SignOutAsync();
+            TempData["SuccessMessage"] = "Your account has been deleted.";
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Manager/Details/{id}
@@ -70,10 +174,27 @@ namespace Star_Events.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Star_Events.Models.ViewModels.EventCreateViewModel model, IFormFile poster)
         {
+            // Check for duplicate event name and date
+            if (await _context.Events.AnyAsync(e => e.Name == model.Name && e.Date == model.Date))
+            {
+                ModelState.AddModelError("Name", "An event with this name and date already exists.");
+            }
+
+            // Check for at least one valid ticket type
+            bool hasValidTicketType = (model.VipPrice > 0 && model.VipTotal > 0) ||
+                                    (model.SeatingPrice > 0 && model.SeatingTotal > 0) ||
+                                    (model.StandingPrice > 0 && model.StandingTotal > 0);
+
+            if (!hasValidTicketType)
+            {
+                ModelState.AddModelError("", "At least one ticket type must be configured with both price and quantity greater than 0.");
+            }
+
             if (ModelState.IsValid)
             {
-                var managerId = _userManager.GetUserId(User); // Get current manager's user ID
-                if (managerId == null) return Unauthorized(); // Ensure the user is logged in
+                var managerId = _userManager.GetUserId(User);
+                if (managerId == null) return Unauthorized();
+
                 var ev = new Event
                 {
                     Id = Guid.NewGuid(),
@@ -84,15 +205,12 @@ namespace Star_Events.Controllers
                     Location = model.Location,
                     Description = model.Description,
                     VenueId = model.VenueId,
-
-
-                    ManagerId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty
-
+                    ManagerId = managerId
                 };
                 ev.PosterUrl = await SavePoster(poster);
                 await _eventService.CreateEventAsync(ev);
 
-                // seed ticket types (VIP, Seating, Standing)
+                // Ticket types
                 var types = new List<TicketType>();
                 if (model.VipTotal > 0) types.Add(new TicketType { Id = Guid.NewGuid(), EventId = ev.Id, Name = "VIP", Price = model.VipPrice, TotalAvailable = model.VipTotal });
                 if (model.SeatingTotal > 0) types.Add(new TicketType { Id = Guid.NewGuid(), EventId = ev.Id, Name = "Seating", Price = model.SeatingPrice, TotalAvailable = model.SeatingTotal });
@@ -102,22 +220,35 @@ namespace Star_Events.Controllers
                     _context.TicketTypes.AddRange(types);
                     await _context.SaveChangesAsync();
                 }
+                
+                TempData["SuccessMessage"] = "Event created successfully!";
                 return RedirectToAction(nameof(MyEvents));
             }
-            // reload venues on error
+
+            // reload venues if validation fails
             model.Venues = _context.Venues.Select(v => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
             {
                 Value = v.Id.ToString(),
                 Text = v.Name
             }).ToList();
+
             return View(model);
         }
+
 
         // GET: Manager/Edit/{id}
         public async Task<IActionResult> Edit(Guid id)
         {
             var ev = await _eventService.GetEventByIdAsync(id);
             if (ev == null) return NotFound();
+            
+            // Load venues for dropdown
+            ViewBag.Venues = _context.Venues.Select(v => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Value = v.Id.ToString(),
+                Text = v.Name
+            }).ToList();
+            
             return View(ev);
         }
 
@@ -125,6 +256,12 @@ namespace Star_Events.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Event ev, IFormFile? poster)
         {
+            // Check for duplicate event name and date (excluding current event)
+            if (await _context.Events.AnyAsync(e => e.Name == ev.Name && e.Date == ev.Date && e.Id != ev.Id))
+            {
+                ModelState.AddModelError("Name", "An event with this name and date already exists.");
+            }
+
             if (ModelState.IsValid)
             {
                 // Preserve ManagerId (not posted by the form)
@@ -138,8 +275,17 @@ namespace Star_Events.Controllers
                     ev.PosterUrl = await SavePoster(poster);
                 }
                 await _eventService.UpdateEventAsync(ev);
+                TempData["SuccessMessage"] = "Event updated successfully!";
                 return RedirectToAction(nameof(MyEvents));
             }
+            
+            // Reload venues if validation fails
+            ViewBag.Venues = _context.Venues.Select(v => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Value = v.Id.ToString(),
+                Text = v.Name
+            }).ToList();
+            
             return View(ev);
         }
 
@@ -155,7 +301,15 @@ namespace Star_Events.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            await _eventService.DeleteEventAsync(id);
+            try
+            {
+                await _eventService.DeleteEventAsync(id);
+                TempData["SuccessMessage"] = "Event deleted successfully!";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error deleting event: {ex.Message}";
+            }
             return RedirectToAction(nameof(MyEvents));
         }
 
@@ -268,6 +422,8 @@ namespace Star_Events.Controllers
             var lines = new List<string> { "TicketType,Quantity,TotalAmount,SaleDate" };
             lines.AddRange(sales.Select(s => $"{EscapeCsv(s.TicketType.Name)},{s.Quantity},{s.TotalAmount},{s.SaleDate:yyyy-MM-dd}"));
             var bytes = System.Text.Encoding.UTF8.GetBytes(string.Join("\n", lines));
+            
+            TempData["SuccessMessage"] = "CSV report downloaded successfully!";
             return File(bytes, "text/csv", "ticket-sales.csv");
         }
 
@@ -300,6 +456,8 @@ namespace Star_Events.Controllers
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
             var content = stream.ToArray();
+            
+            TempData["SuccessMessage"] = "Excel report downloaded successfully!";
             return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ticket-sales.xlsx");
         }
 
@@ -354,6 +512,8 @@ namespace Star_Events.Controllers
             using var ms = new MemoryStream();
             doc.GeneratePdf(ms);
             var bytes = ms.ToArray();
+            
+            TempData["SuccessMessage"] = "PDF report downloaded successfully!";
             return File(bytes, "application/pdf", "ticket-sales.pdf");
         }
 

@@ -14,7 +14,7 @@ namespace Star_Events.Data.Entities
 
     public class Booking
     {
-        [Key]
+        
         public int Id { get; set; }
 
         [Required]

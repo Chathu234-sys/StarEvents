@@ -1,12 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Star_Events.Helper;
 using Star_Events.Models;
 
 namespace Star_Events.Data.Entities
 {
-    /// <summary>
-    /// Individual ticket entity for each purchased ticket
-    /// </summary>
+    
     public class Ticket : BaseEntity
     {
         [Required]

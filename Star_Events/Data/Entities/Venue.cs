@@ -4,11 +4,11 @@ namespace Star_Events.Data.Entities
 {
     public class Venue
     {
-        [Key]
+       
         public Guid Id { get; set; }
 
-        [Required]
-        [StringLength(150)]
+        [Required(ErrorMessage = "Venue name is required.")]
+        [StringLength(150, ErrorMessage = "Venue name cannot exceed 150 characters.")]
         public string Name { get; set; } = string.Empty;
 
         [StringLength(200)]

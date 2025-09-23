@@ -104,6 +104,8 @@ namespace Star_Events.Controllers
             ws.Columns().AdjustToContents();
             using var ms = new MemoryStream();
             wb.SaveAs(ms);
+            
+            TempData["SuccessMessage"] = "Users Excel report downloaded successfully!";
             return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "users.xlsx");
         }
 
@@ -156,6 +158,8 @@ namespace Star_Events.Controllers
             });
             using var ms = new MemoryStream();
             doc.GeneratePdf(ms);
+            
+            TempData["SuccessMessage"] = "Users PDF report downloaded successfully!";
             return File(ms.ToArray(), "application/pdf", "users.pdf");
         }
 
@@ -205,6 +209,8 @@ namespace Star_Events.Controllers
             ws.Columns().AdjustToContents();
             using var ms = new MemoryStream();
             wb.SaveAs(ms);
+            
+            TempData["SuccessMessage"] = "Events Excel report downloaded successfully!";
             return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "events.xlsx");
         }
 
@@ -257,6 +263,8 @@ namespace Star_Events.Controllers
             });
             using var ms = new MemoryStream();
             doc.GeneratePdf(ms);
+            
+            TempData["SuccessMessage"] = "Events PDF report downloaded successfully!";
             return File(ms.ToArray(), "application/pdf", "events.pdf");
         }
 
@@ -317,6 +325,8 @@ namespace Star_Events.Controllers
             using var ms = new MemoryStream();
             wb.SaveAs(ms);
             var fileName = eventId.HasValue ? $"bookings_{eventId.Value}.xlsx" : "bookings.xlsx";
+            
+            TempData["SuccessMessage"] = "Bookings Excel report downloaded successfully!";
             return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
 
@@ -360,6 +370,8 @@ namespace Star_Events.Controllers
             using var ms = new MemoryStream();
             doc.GeneratePdf(ms);
             var fileName = eventId.HasValue ? $"bookings_{eventId.Value}.pdf" : "bookings.pdf";
+            
+            TempData["SuccessMessage"] = "Bookings PDF report downloaded successfully!";
             return File(ms.ToArray(), "application/pdf", fileName);
         }
 
@@ -404,6 +416,8 @@ namespace Star_Events.Controllers
             using var ms = new MemoryStream();
             wb.SaveAs(ms);
             var excelName = eventId.HasValue ? $"sales_{eventId.Value}.xlsx" : "sales.xlsx";
+            
+            TempData["SuccessMessage"] = "Sales Excel report downloaded successfully!";
             return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
         }
 
@@ -444,6 +458,8 @@ namespace Star_Events.Controllers
             using var ms = new MemoryStream();
             doc.GeneratePdf(ms);
             var pdfName = eventId.HasValue ? $"sales_{eventId.Value}.pdf" : "sales.pdf";
+            
+            TempData["SuccessMessage"] = "Sales PDF report downloaded successfully!";
             return File(ms.ToArray(), "application/pdf", pdfName);
         }
     }

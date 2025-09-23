@@ -13,10 +13,10 @@ namespace Star_Events.Business.Interfaces
         Task<Payment> UpdateAsync(Payment payment);
         Task<Payment> UpdatePaymentStatusAsync(int paymentId, PaymentStatus status, string? failureReason = null);
         Task<bool> ProcessPaymentAsync(int paymentId);
-        Task<bool> CancelPaymentAsync(int paymentId, string reason);
         Task<decimal> GetTotalRevenueAsync();
         Task<decimal> GetRevenueByEventAsync(Guid eventId);
         Task<decimal> GetRevenueByCustomerAsync(string customerId);
     }
+
 }
 

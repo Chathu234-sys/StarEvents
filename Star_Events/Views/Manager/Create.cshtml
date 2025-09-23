@@ -7,27 +7,36 @@
         </h2>
 
         <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <!-- Validation Summary -->
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Please correct the following errors:</strong>
+            </div>
+            
             <!-- Event Name -->
             <div class="mb-3">
                 <label asp-for="Name" class="form-label fw-bold">
-                    <i class="bi bi-type me-2 text-warning"></i> Event Name
+                    <i class="bi bi-type me-2 text-warning"></i> Event Name <span class="text-danger">*</span>
                 </label>
-                <input asp-for="Name" class="form-control rounded-3 border-0 shadow-sm" placeholder="Enter event name" />
+                <input asp-for="Name" class="form-control rounded-3 border-0 shadow-sm" placeholder="Enter event name" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
             <!-- Date & Time -->
             <div class="row g-3">
                 <div class="col-md-6">
                     <label asp-for="Date" class="form-label fw-bold">
-                        <i class="bi bi-calendar-event me-2 text-info"></i> Date
+                        <i class="bi bi-calendar-event me-2 text-info"></i> Date <span class="text-danger">*</span>
                     </label>
-                    <input asp-for="Date" type="date" class="form-control rounded-3 border-0 shadow-sm" />
+                    <input asp-for="Date" type="date" class="form-control rounded-3 border-0 shadow-sm" required />
+                    <span asp-validation-for="Date" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="Time" class="form-label fw-bold">
-                        <i class="bi bi-alarm me-2 text-danger"></i> Time
+                        <i class="bi bi-alarm me-2 text-danger"></i> Time <span class="text-danger">*</span>
                     </label>
-                    <input asp-for="Time" type="time" class="form-control rounded-3 border-0 shadow-sm" />
+                    <input asp-for="Time" type="time" class="form-control rounded-3 border-0 shadow-sm" required />
+                    <span asp-validation-for="Time" class="text-danger"></span>
                 </div>
             </div>
 
@@ -35,15 +44,17 @@
             <div class="row g-3 mt-3">
                 <div class="col-md-6">
                     <label asp-for="Category" class="form-label fw-bold">
-                        <i class="bi bi-tags me-2 text-primary"></i> Category
+                        <i class="bi bi-tags me-2 text-primary"></i> Category <span class="text-danger">*</span>
                     </label>
-                    <input asp-for="Category" class="form-control rounded-3 border-0 shadow-sm" placeholder="e.g. Concert, Theatre" />
+                    <input asp-for="Category" class="form-control rounded-3 border-0 shadow-sm" placeholder="e.g. Concert, Theatre" required />
+                    <span asp-validation-for="Category" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="Location" class="form-label fw-bold">
-                        <i class="bi bi-geo-alt me-2 text-warning"></i> Location
+                        <i class="bi bi-geo-alt me-2 text-warning"></i> Location <span class="text-danger">*</span>
                     </label>
-                    <input asp-for="Location" class="form-control rounded-3 border-0 shadow-sm" placeholder="City / Area" />
+                    <input asp-for="Location" class="form-control rounded-3 border-0 shadow-sm" placeholder="City / Area" required />
+                    <span asp-validation-for="Location" class="text-danger"></span>
                 </div>
             </div>
 
@@ -68,8 +79,11 @@
             <!-- Ticket Types -->
             <fieldset class="border rounded-4 p-4 mt-4 bg-secondary bg-opacity-25">
                 <legend class="float-none w-auto px-3 fw-bold text-light">
-                    <i class="bi bi-ticket-detailed me-2 text-warning"></i> Ticket Types
+                    <i class="bi bi-ticket-detailed me-2 text-warning"></i> Ticket Types <span class="text-danger">*</span>
                 </legend>
+                <div class="text-muted mb-3">
+                    <small><i class="bi bi-info-circle me-1"></i> At least one ticket type must be configured with price and quantity.</small>
+                </div>
 
                 <div class="row g-3">
                     <!-- VIP -->
@@ -78,9 +92,11 @@
                             <div class="card-body">
                                 <h6 class="card-title fw-bold text-warning">VIP</h6>
                                 <label class="form-label">Price</label>
-                                <input class="form-control" asp-for="VipPrice" type="number" step="0.01" />
+                                <input class="form-control" asp-for="VipPrice" type="number" step="0.01" min="0" />
+                                <span asp-validation-for="VipPrice" class="text-danger small"></span>
                                 <label class="form-label mt-2">Total</label>
-                                <input class="form-control" asp-for="VipTotal" type="number" />
+                                <input class="form-control" asp-for="VipTotal" type="number" min="0" />
+                                <span asp-validation-for="VipTotal" class="text-danger small"></span>
                             </div>
                         </div>
                     </div>
@@ -91,9 +107,11 @@
                             <div class="card-body">
                                 <h6 class="card-title fw-bold text-info">Seating</h6>
                                 <label class="form-label">Price</label>
-                                <input class="form-control" asp-for="SeatingPrice" type="number" step="0.01" />
+                                <input class="form-control" asp-for="SeatingPrice" type="number" step="0.01" min="0" />
+                                <span asp-validation-for="SeatingPrice" class="text-danger small"></span>
                                 <label class="form-label mt-2">Total</label>
-                                <input class="form-control" asp-for="SeatingTotal" type="number" />
+                                <input class="form-control" asp-for="SeatingTotal" type="number" min="0" />
+                                <span asp-validation-for="SeatingTotal" class="text-danger small"></span>
                             </div>
                         </div>
                     </div>
@@ -104,9 +122,11 @@
                             <div class="card-body">
                                 <h6 class="card-title fw-bold text-success">Standing</h6>
                                 <label class="form-label">Price</label>
-                                <input class="form-control" asp-for="StandingPrice" type="number" step="0.01" />
+                                <input class="form-control" asp-for="StandingPrice" type="number" step="0.01" min="0" />
+                                <span asp-validation-for="StandingPrice" class="text-danger small"></span>
                                 <label class="form-label mt-2">Total</label>
-                                <input class="form-control" asp-for="StandingTotal" type="number" />
+                                <input class="form-control" asp-for="StandingTotal" type="number" min="0" />
+                                <span asp-validation-for="StandingTotal" class="text-danger small"></span>
                             </div>
                         </div>
                     </div>
@@ -139,7 +159,36 @@
         output.src = URL.createObjectURL(input.files[0]);
         output.classList.remove("d-none");
     }
+
+    // Client-side validation for ticket types
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const submitBtn = document.querySelector('button[type="submit"]');
+        
+        form.addEventListener('submit', function(e) {
+            const vipPrice = parseFloat(document.querySelector('input[name="VipPrice"]').value) || 0;
+            const vipTotal = parseInt(document.querySelector('input[name="VipTotal"]').value) || 0;
+            const seatingPrice = parseFloat(document.querySelector('input[name="SeatingPrice"]').value) || 0;
+            const seatingTotal = parseInt(document.querySelector('input[name="SeatingTotal"]').value) || 0;
+            const standingPrice = parseFloat(document.querySelector('input[name="StandingPrice"]').value) || 0;
+            const standingTotal = parseInt(document.querySelector('input[name="StandingTotal"]').value) || 0;
+            
+            const hasValidTicketType = (vipPrice > 0 && vipTotal > 0) || 
+                                    (seatingPrice > 0 && seatingTotal > 0) || 
+                                    (standingPrice > 0 && standingTotal > 0);
+            
+            if (!hasValidTicketType) {
+                e.preventDefault();
+                alert('Please configure at least one ticket type with both price and quantity greater than 0.');
+                return false;
+            }
+        });
+    });
 </script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
 
 <style>
     body {

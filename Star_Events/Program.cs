@@ -6,6 +6,8 @@ using Star_Events.Repositories.Interfaces;
 using Star_Events.Repositories.Services;
 using Star_Events.Business.Services;
 using Star_Events.Business.Interfaces;
+using Star_Events.Data.Entities;
+using Star_Events.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +47,7 @@ builder.Services.AddScoped<IQRCodeService, QRCodeService>();
 // Email Service
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
+
 
 // Stripe Configuration
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));

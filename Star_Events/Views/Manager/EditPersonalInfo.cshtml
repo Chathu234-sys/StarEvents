@@ -1,0 +1,132 @@
+@model Star_Events.Models.ViewModels.ProfileInputViewModel
+@{
+    ViewData["Title"] = "Edit Personal Info";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <form asp-action="EditPersonalInfo" method="post">
+                <!-- Email Card -->
+            <div class="card shadow-sm mb-4 card-dark">
+                <div class="card-header card-header-dark">
+                    <h6 class="mb-0"><i class="bi bi-envelope me-2"></i>Email</h6>
+                </div>
+                <div class="card-body">
+                    <input class="form-control bg-secondary text-white" value="@Model.Email" disabled />
+                </div>
+            </div>
+
+            <!-- Name Card -->
+            <div class="card shadow-sm mb-4 card-dark">
+                <div class="card-header card-header-dark">
+                    <h6 class="mb-0"><i class="bi bi-person me-2"></i>Name</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="FirstName" class="form-label"></label>
+                            <input asp-for="FirstName" class="form-control form-control-dark" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label"></label>
+                            <input asp-for="LastName" class="form-control form-control-dark" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Card -->
+            <div class="card shadow-sm mb-4 card-dark">
+                <div class="card-header card-header-dark">
+                    <h6 class="mb-0"><i class="bi bi-telephone me-2"></i>Contact Number</h6>
+                </div>
+                <div class="card-body">
+                    <input asp-for="ContactNumber" class="form-control form-control-dark" />
+                    <span asp-validation-for="ContactNumber" class="text-danger"></span>
+                </div>
+            </div>
+
+                <!-- Buttons Card -->
+                <div class="card shadow-sm mb-4 card-dark">
+                    <div class="card-body d-flex gap-3 justify-content-end">
+                        <button type="submit" class="btn btn-gradient-primary"><i class="bi bi-check-circle me-1"></i>Save Changes</button>
+                        <a asp-action="PersonalInfo" class="btn btn-outline-light"><i class="bi bi-x-circle me-1"></i>Cancel</a>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    .card-dark {
+        background-color: #1a1a1a;
+        color: #eaeaea;
+        border: 1px solid #2a2a2a;
+        border-radius: 1rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card-dark:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+    .card-header-dark {
+        background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+        color: #fff;
+        border-bottom: 1px solid #2a2a2a;
+        font-weight: 500;
+    }
+
+    .form-control-dark {
+        background-color: #2a2a2a;
+        color: #eaeaea;
+        border: 1px solid #3a3a3a;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-dark:focus {
+            background-color: #2a2a2a;
+            border-color: #ff7e5f;
+            box-shadow: 0 0 8px rgba(255, 126, 95, 0.5);
+            color: #fff;
+        }
+
+    .btn-gradient-primary {
+        background: linear-gradient(90deg, #ff7e5f, #feb47b);
+        color: #fff;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-gradient-primary:hover {
+            background: linear-gradient(90deg, #feb47b, #ff7e5f);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+    .btn-outline-light {
+        color: #fff;
+        border-color: #fff;
+    }
+
+        .btn-outline-light:hover {
+            background-color: #fff;
+            color: #1a1a1a;
+        }
+
+    .form-label {
+        color: #a0a8b7;
+        font-weight: 500;
+    }
+
+</style>

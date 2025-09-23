@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Star_Events.Business.Interfaces;
 using Star_Events.Data;
 using Star_Events.Data.Entities;
+using Star_Events.Models.ViewModels;
 using System.Security.Claims;
 
 namespace Star_Events.Controllers
@@ -14,12 +15,14 @@ namespace Star_Events.Controllers
         private readonly IBookingService _service;
         private readonly ApplicationDbContext _db;
         private readonly IEmailService _emailService;
+        private readonly IPaymentService _paymentService;
 
-        public BookingsController(IBookingService service, ApplicationDbContext db, IEmailService emailService)
+        public BookingsController(IBookingService service, ApplicationDbContext db, IEmailService emailService, IPaymentService paymentService)
         {
             _service = service;
             _db = db;
             _emailService = emailService;
+            _paymentService = paymentService;
         }
 
         [HttpGet]
@@ -36,6 +39,11 @@ namespace Star_Events.Controllers
             var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
             var booking = await _service.GetAsync(id);
             if (booking == null || booking.CustomerId != customerId) return NotFound();
+            
+            // Load payment information
+            var payments = await _paymentService.GetByBookingIdAsync(id);
+            ViewBag.Payments = payments;
+            
             return View(booking);
         }
 
@@ -90,6 +98,7 @@ namespace Star_Events.Controllers
             TempData["SuccessMessage"] = "Booking created successfully";
             return RedirectToAction(nameof(Details), new { id = booking.Id });
         }
+
     }
 }
 

@@ -1,0 +1,115 @@
+@model Star_Events.Models.ViewModels.ProfileInputViewModel
+@{
+    ViewData["Title"] = "Personal Info";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <!-- Email Card -->
+            <div class="card shadow-sm mb-3 card-dark">
+                <div class="card-header card-header-dark">
+                    <h6 class="mb-0"><i class="bi bi-envelope me-2"></i>Email</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0 text-light">@Model.Email</p>
+                </div>
+            </div>
+
+            <!-- First Name Card -->
+            <div class="card shadow-sm mb-3 card-dark">
+                <div class="card-header card-header-dark">
+                    <h6 class="mb-0"><i class="bi bi-person me-2"></i>First Name</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0 text-light">@Model.FirstName</p>
+                </div>
+            </div>
+
+            <!-- Last Name Card -->
+            <div class="card shadow-sm mb-3 card-dark">
+                <div class="card-header card-header-dark">
+                    <h6 class="mb-0"><i class="bi bi-person me-2"></i>Last Name</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0 text-light">@Model.LastName</p>
+                </div>
+            </div>
+
+            <!-- Contact Number Card -->
+            <div class="card shadow-sm mb-4 card-dark">
+                <div class="card-header card-header-dark">
+                    <h6 class="mb-0"><i class="bi bi-telephone me-2"></i>Contact Number</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0 text-light">@Model.ContactNumber</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex gap-2 justify-content-end mb-5">
+                <a asp-action="EditPersonalInfo" class="btn btn-gradient-primary"><i class="bi bi-pencil-square me-1"></i>Edit</a>
+                <a asp-action="ChangePassword" class="btn btn-outline-info"><i class="bi bi-key me-1"></i>Change Password</a>
+                <form asp-action="DeleteAccount" method="post" class="d-inline" onsubmit="return confirm('Delete your account? This cannot be undone.');">
+                    <button type="submit" class="btn btn-outline-danger"><i class="bi bi-trash me-1"></i>Delete</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-dark {
+        background-color: #1a1a1a;
+        color: #eaeaea;
+        border: 1px solid #2a2a2a;
+        border-radius: 1rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card-dark:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+    .card-header-dark {
+        background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+        color: #fff;
+        border-bottom: 1px solid #2a2a2a;
+        font-weight: 500;
+    }
+
+    .label-muted {
+        color: #a0a8b7;
+        font-weight: 500;
+    }
+
+    .btn-gradient-primary {
+        background: linear-gradient(90deg, #ff7e5f, #feb47b);
+        color: #fff;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-gradient-primary:hover {
+            background: linear-gradient(90deg, #feb47b, #ff7e5f);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+    .btn-outline-info, .btn-outline-danger {
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: #fff;
+        }
+</style>

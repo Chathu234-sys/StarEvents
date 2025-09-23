@@ -2,15 +2,10 @@ using QRCoder;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using Star_Events.Business.Interfaces;
 
 namespace Star_Events.Business.Services
 {
-    public interface IQRCodeService
-    {
-        string GenerateQRCodeData(string ticketNumber, int bookingId, Guid eventId);
-        byte[] GenerateQRCodeImage(string qrData, int size = 200);
-        string SaveQRCodeImage(string qrData, string ticketNumber, int size = 200);
-    }
 
     public class QRCodeService : IQRCodeService
     {
@@ -31,7 +26,7 @@ namespace Star_Events.Business.Services
                 ticketNumber = ticketNumber,
                 bookingId = bookingId,
                 eventId = eventId,
-                timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd"),
                 type = "event_ticket"
             };
 
@@ -68,7 +63,7 @@ namespace Star_Events.Business.Services
                 var qrCodeBytes = GenerateQRCodeImage(qrData, size);
                 
                 // Save to file
-                var fileName = $"ticket_{ticketNumber}_{DateTime.UtcNow:yyyyMMddHHmmss}.png";
+                var fileName = $"ticket_{ticketNumber}_{DateTime.UtcNow:yyyyMMdd}.png";
                 var filePath = Path.Combine(qrCodesPath, fileName);
                 
                 File.WriteAllBytes(filePath, qrCodeBytes);

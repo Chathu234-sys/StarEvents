@@ -80,11 +80,18 @@ namespace Star_Events.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Date,Time,Category,Location,Description,TicketPrice,PosterUrl,VenueId,ManagerId")] Event @event)
         {
+            // Check for duplicate event name and date
+            if (await _context.Events.AnyAsync(e => e.Name == @event.Name && e.Date == @event.Date))
+            {
+                ModelState.AddModelError("Name", "An event with this name and date already exists.");
+            }
+
             if (ModelState.IsValid)
             {
                 @event.Id = Guid.NewGuid();
                 _context.Add(@event);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Event created successfully!";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["VenueId"] = new SelectList(_context.Venues, "Id", "Name", @event.VenueId);
@@ -118,12 +125,19 @@ namespace Star_Events.Controllers
                 return NotFound();
             }
 
+            // Check for duplicate event name and date (excluding current event)
+            if (await _context.Events.AnyAsync(e => e.Name == @event.Name && e.Date == @event.Date && e.Id != @event.Id))
+            {
+                ModelState.AddModelError("Name", "An event with this name and date already exists.");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(@event);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Event updated successfully!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -166,13 +180,24 @@ namespace Star_Events.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var @event = await _context.Events.FindAsync(id);
-            if (@event != null)
+            try
             {
-                _context.Events.Remove(@event);
+                var @event = await _context.Events.FindAsync(id);
+                if (@event != null)
+                {
+                    _context.Events.Remove(@event);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Event deleted successfully!";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Event not found.";
+                }
             }
-
-            await _context.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error deleting event: {ex.Message}";
+            }
             return RedirectToAction(nameof(Index));
         }
 

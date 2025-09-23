@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Star_Events.Helper;
 using Star_Events.Models;
 
 namespace Star_Events.Data.Entities
@@ -41,6 +42,7 @@ namespace Star_Events.Data.Entities
         [StringLength(500)]
         public string? FailureReason { get; set; }
         
+        
         // Navigation properties
         public virtual Booking Booking { get; set; } = null!;
         public virtual ApplicationUser Customer { get; set; } = null!;
@@ -67,7 +69,6 @@ namespace Star_Events.Data.Entities
         Pending,
         Processing,
         Completed,
-        Failed,
-        Cancelled
+        Failed
     }
 }
