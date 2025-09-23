@@ -7,7 +7,7 @@ namespace Star_Events.Data.Entities
 {
     public partial class Event
     {
-        [Key]
+        
         public Guid Id { get; set; }
 
         [Required]
@@ -37,6 +37,8 @@ namespace Star_Events.Data.Entities
         [Required]
         public string ManagerId { get; set; } = string.Empty;
         public UserModel? Users { get; set; } 
+
+       
 
         public ICollection<TicketType> TicketTypes { get; set; } = new List<TicketType>();
         public ICollection<TicketSale> TicketSales { get; set; } = new List<TicketSale>();

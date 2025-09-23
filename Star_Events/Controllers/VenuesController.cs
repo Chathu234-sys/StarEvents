@@ -28,10 +28,17 @@ namespace Star_Events.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Venue model)
         {
+            // Check for duplicate venue name
+            if (await _db.Venues.AnyAsync(v => v.Name == model.Name))
+            {
+                ModelState.AddModelError("Name", "A venue with this name already exists.");
+            }
+
             if (!ModelState.IsValid) return View(model);
             model.Id = Guid.NewGuid();
             await _db.Venues.AddAsync(model);
             await _db.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Venue created successfully!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -47,9 +54,17 @@ namespace Star_Events.Controllers
         public async Task<IActionResult> Edit(Guid id, Venue model)
         {
             if (id != model.Id) return BadRequest();
+            
+            // Check for duplicate venue name (excluding current venue)
+            if (await _db.Venues.AnyAsync(v => v.Name == model.Name && v.Id != model.Id))
+            {
+                ModelState.AddModelError("Name", "A venue with this name already exists.");
+            }
+
             if (!ModelState.IsValid) return View(model);
             _db.Venues.Update(model);
             await _db.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Venue updated successfully!";
             return RedirectToAction(nameof(Index));
         }
     }

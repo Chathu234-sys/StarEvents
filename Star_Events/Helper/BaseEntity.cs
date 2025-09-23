@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Star_Events.Data.Entities
+namespace Star_Events.Helper
 {
     /// <summary>
     /// Base entity class providing common properties for all entities

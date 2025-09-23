@@ -203,27 +203,6 @@ namespace Star_Events.Controllers
             return RedirectToAction("Details", "Bookings", new { id = bookingId });
         }
 
-        // GET: /Payments/Cancel?bookingId=123
-        [HttpGet]
-        public async Task<IActionResult> Cancel(int bookingId)
-        {
-            var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
-            var booking = await _context.Bookings
-                .FirstOrDefaultAsync(b => b.Id == bookingId && b.CustomerId == customerId);
-
-            if (booking != null)
-            {
-                // Cancel any pending payments
-                var payments = await _paymentService.GetByBookingIdAsync(bookingId);
-                foreach (var payment in payments.Where(p => p.Status == PaymentStatus.Pending))
-                {
-                    await _paymentService.CancelPaymentAsync(payment.Id, "Payment cancelled by user");
-                }
-            }
-
-            TempData["ErrorMessage"] = "Payment was cancelled.";
-            return RedirectToAction("Details", "Bookings", new { id = bookingId });
-        }
 
         // GET: /Payments/History
         [HttpGet]

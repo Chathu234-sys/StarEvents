@@ -1,0 +1,24 @@
+@{
+    var isManager = User?.IsInRole("Manager") == true;
+}
+<ul class="nav nav-tabs mb-3">
+    @if (!isManager)
+    {
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Customer" ? "active" : "")" asp-controller="Profile" asp-action="Customer">Profile Info</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Manager" ? "active" : "")" asp-controller="Profile" asp-action="Manager">Profile Info</a>
+        </li>
+    }
+    @* Future tabs (e.g., Security, Notifications) can go here *@
+</ul>
+
+
+
+
+
+

@@ -144,19 +144,6 @@ namespace Star_Events.Business.Services
             }
         }
 
-        public async Task<bool> CancelPaymentAsync(int paymentId, string reason)
-        {
-            var payment = await _paymentRepository.GetByIdAsync(paymentId);
-            if (payment == null || payment.Status == PaymentStatus.Completed)
-                return false;
-
-            payment.Status = PaymentStatus.Cancelled;
-            payment.FailureReason = reason;
-            payment.UpdatedAt = DateTime.UtcNow;
-
-            await _paymentRepository.UpdateAsync(payment);
-            return true;
-        }
 
         public async Task<decimal> GetTotalRevenueAsync()
         {

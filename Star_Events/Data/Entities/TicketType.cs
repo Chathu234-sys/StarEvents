@@ -4,7 +4,7 @@ namespace Star_Events.Data.Entities
 {
     public class TicketType
     {
-        [Key]
+       
         public Guid Id { get; set; }
 
         [Required]
